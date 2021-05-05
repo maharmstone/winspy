@@ -19,7 +19,6 @@
 #include "resource.h"
 #include "WinSpy.h"
 #include "FindTool.h"
-//#include "AggressiveOptimize.h"
 #include "CaptureWindow.h"
 #include "BitmapButton.h"
 #include "Utils.h"
