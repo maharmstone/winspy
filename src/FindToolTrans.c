@@ -20,7 +20,7 @@ HBITMAP LoadPNGImage(UINT id, void **bits);
 #define DOCKRECT_TYPE_SHADED 1
 #define DOCKRECT_TYPE_THICK  2
 
-RECT spritemap[2][5] = 
+RECT spritemap[2][5] =
 {
 	{
 		{ 0, 2, 54, 34 },
@@ -66,7 +66,7 @@ HBITMAP MakeDockPanelBitmap(RECT *rect)
 {
 	int width  = GetRectWidth(rect);
 	int height = GetRectHeight(rect);
-	
+
 	DWORD *pdwBox;
 
 	static HBITMAP hbmBox, hbm;
@@ -78,7 +78,7 @@ HBITMAP MakeDockPanelBitmap(RECT *rect)
 
 	// 32bpp bitmap
 	BITMAPINFOHEADER bih = { sizeof(bih) };
-	
+
 	bih.biWidth			= width;
 	bih.biHeight		= height;
 	bih.biPlanes		= 1;
@@ -149,7 +149,7 @@ void UpdatePanelTrans(HWND hwndPanel, RECT *rect)
 
 	POINT pt = { rect->left, rect->top };
 	SIZE sz = { rect->right-rect->left, rect->bottom-rect->top};
-	
+
 	HDC hdcSrc = GetDC(0);
 	HDC hdcMem = CreateCompatibleDC(hdcSrc);
 	HBITMAP hbm;
@@ -161,8 +161,8 @@ void UpdatePanelTrans(HWND hwndPanel, RECT *rect)
 
 	//FillRect(hdcMem, &rect, GetSysColorBrush(COLOR_HIGHLIGHT));
 	//SetWindowLongPtr(hwndPanel, GWL_EXSTYLE, GetWindowLongPtr(hwndPanel, GWL_EXSTYLE) | WS_EX_LAYERED);
-	
-	UpdateLayeredWindow(hwndPanel, 
+
+	UpdateLayeredWindow(hwndPanel,
 		hdcSrc,
 		&pt, //pos
 		&sz, //size
@@ -177,9 +177,9 @@ void UpdatePanelTrans(HWND hwndPanel, RECT *rect)
 	ReleaseDC(0, hdcSrc);
 }
 
-// 
+//
 //	Very simple window-procedure for the transparent window
-//  all the drawing happens via the DOCKPANEL WM_TIMER, 
+//  all the drawing happens via the DOCKPANEL WM_TIMER,
 //  and calls to UpdateLayeredWindow with a transparent PNG graphic
 //
 LRESULT CALLBACK TransWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -210,33 +210,26 @@ HWND ShowTransWindow(HWND hwnd)//, RECT *rect)
 	HWND hwndTransPanel;
 	RECT r,rect;
 
-	__try
-	{
-		GetWindowRect(hwnd, &r);
-		rect = r;
+    GetWindowRect(hwnd, &r);
+    rect = r;
 
-		InitTrans();
+    InitTrans();
 
-		hwndTransPanel = CreateWindowEx(
-			WS_EX_TOOLWINDOW|WS_EX_LAYERED,
-			WC_TRANSWINDOW, 
-			0, 
-			WS_POPUP,
-			r.left, r.top, 
-			r.right-r.left,
-			r.bottom-r.top, 
-			0, 0,0, &rect);
+    hwndTransPanel = CreateWindowEx(
+        WS_EX_TOOLWINDOW|WS_EX_LAYERED,
+        WC_TRANSWINDOW,
+        0,
+        WS_POPUP,
+        r.left, r.top,
+        r.right-r.left,
+        r.bottom-r.top,
+        0, 0,0, &rect);
 
-		UpdatePanelTrans(hwndTransPanel, &r);
+    UpdatePanelTrans(hwndTransPanel, &r);
 
-		SetWindowPos(hwndTransPanel, HWND_TOPMOST, 
-			0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_SHOWWINDOW);
+    SetWindowPos(hwndTransPanel, HWND_TOPMOST,
+        0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_SHOWWINDOW);
 
-		//SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_SHOWWINDOW);
-		return hwndTransPanel;
-	}
-	__except(EXCEPTION_EXECUTE_HANDLER)
-	{
-		return 0;
-	}
+    //SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_SHOWWINDOW);
+    return hwndTransPanel;
 }

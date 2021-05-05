@@ -13,7 +13,7 @@
 
 #pragma comment(lib, "windowscodecs")
 
-//#import "wincodec.idl" no_namespace 
+//#import "wincodec.idl" no_namespace
 
 // Creates a stream object initialized with the data from an executable resource.
 IStream * CreateStreamOnResource(LPCTSTR lpName, LPCTSTR lpType)
@@ -77,14 +77,14 @@ Return:
     return ipStream;
 }
 
-// Now that we have an IStream pointer to the data of the image, 
-// we can use WIC to load that image. An important step in this 
+// Now that we have an IStream pointer to the data of the image,
+// we can use WIC to load that image. An important step in this
 // process is to use WICConvertBitmapSource to ensure that the image
-// is in a 32bpp format suitable for direct conversion into a DIB. 
-// This method assumes that the input image is in the PNG format; 
-// for a splash screen, this is an excellent choice because it allows 
-// an alpha channel as well as lossless compression of the source image. 
-// (To make the splash screen image as small as possible, 
+// is in a 32bpp format suitable for direct conversion into a DIB.
+// This method assumes that the input image is in the PNG format;
+// for a splash screen, this is an excellent choice because it allows
+// an alpha channel as well as lossless compression of the source image.
+// (To make the splash screen image as small as possible,
 // I highly recommend the PNGOUT compression utility.)
 
 // Loads a PNG image from the specified stream (using Windows Imaging Component).
@@ -97,29 +97,33 @@ IWICBitmapSource * LoadBitmapFromStream(IStream * ipImageStream)
     IWICBitmapDecoder * ipDecoder = NULL;
 	IID i = IID_IWICBitmapDecoder;
 
-    if (FAILED(CoCreateInstance(CLSID_WICPngDecoder, NULL, CLSCTX_INPROC_SERVER, 
+    if (FAILED(CoCreateInstance(CLSID_WICPngDecoder, NULL, CLSCTX_INPROC_SERVER,
 		i,//__uuidof(ipDecoder)
-		 
+
 		(void **)&ipDecoder)))
-        goto Return;
- 
+        return NULL;
+
 
     // load the PNG
-    if (FAILED(ipDecoder->Initialize(ipImageStream, WICDecodeMetadataCacheOnLoad)))
-        goto ReleaseDecoder;
+    if (FAILED(ipDecoder->Initialize(ipImageStream, WICDecodeMetadataCacheOnLoad))) {
+        ipDecoder->Release();
+        return NULL;
+    }
 
     // check for the presence of the first frame in the bitmap
     UINT nFrameCount = 0;
 
-    if (FAILED(ipDecoder->GetFrameCount(&nFrameCount)) || nFrameCount != 1)
-        goto ReleaseDecoder;
+    if (FAILED(ipDecoder->GetFrameCount(&nFrameCount)) || nFrameCount != 1) {
+        ipDecoder->Release();
+        return NULL;
+    }
 
     // load the first frame (i.e., the image)
     IWICBitmapFrameDecode * ipFrame = NULL;
 
     if (FAILED(ipDecoder->GetFrame(0, &ipFrame)))
         goto ReleaseDecoder;
- 
+
 
     // convert the image to 32bpp BGRA format with pre-multiplied alpha
     //   (it may not be stored in that format natively in the PNG resource,
@@ -130,9 +134,7 @@ IWICBitmapSource * LoadBitmapFromStream(IStream * ipImageStream)
 ReleaseDecoder:
     ipDecoder->Release();
 
-Return:
     return ipBitmap;
-
 }
 
 
@@ -147,7 +149,7 @@ HBITMAP CreateHBITMAP(IWICBitmapSource * ipBitmap, PVOID *bits)
     UINT height = 0;
 
     if (FAILED(ipBitmap->GetSize(&width, &height)) || width == 0 || height == 0)
-        goto Return;
+        return NULL;
 
     // prepare structure giving bitmap information (negative height indicates a top-down DIB)
     BITMAPINFO bminfo;
@@ -170,9 +172,9 @@ HBITMAP CreateHBITMAP(IWICBitmapSource * ipBitmap, PVOID *bits)
     ReleaseDC(NULL, hdcScreen);
 
     if (hbmp == NULL)
-        goto Return;
+        return NULL;
 
- 
+
     // extract the image into the HBITMAP
     const UINT cbStride = width * 4;
     const UINT cbImage = cbStride * height;
@@ -185,7 +187,6 @@ HBITMAP CreateHBITMAP(IWICBitmapSource * ipBitmap, PVOID *bits)
         hbmp = NULL;
     }
 
-Return:
     return hbmp;
 }
 
@@ -194,12 +195,12 @@ extern "C"
 HBITMAP LoadPNGImage(UINT id, OUT VOID **bits)
 {
     HBITMAP hbmpSplash = NULL;
- 
+
     // load the PNG image data into a stream
     IStream * ipImageStream = CreateStreamOnResource(MAKEINTRESOURCE(id), _T("PNG"));
 
     if (ipImageStream == NULL)
-        goto Return;
+        return NULL;
 
     // load the bitmap with WIC
     IWICBitmapSource * ipBitmap = LoadBitmapFromStream(ipImageStream);
@@ -216,6 +217,5 @@ ReleaseStream:
 
     ipImageStream->Release();
 
-Return:
     return hbmpSplash;
 }
