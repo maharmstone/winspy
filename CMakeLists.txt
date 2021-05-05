@@ -4,7 +4,7 @@ project(winspy)
 
 set(SRC_FILES
 	src/BitmapButton.c
-    src/CatpureWindow.c
+    src/CaptureWindow.c
     src/DisplayClassInfo.c
     src/DisplayGeneralInfo.c
     src/DisplayProcessInfo.c
