@@ -585,3 +585,4 @@ IDB_SELBOX              PNG                     "selbox.png"
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 
+1 RT_MANIFEST winspy.exe.manifest
