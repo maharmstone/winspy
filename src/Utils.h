@@ -16,12 +16,12 @@ int WINAPI GetRectHeight(RECT *rect);
 int WINAPI GetRectWidth(RECT *rect);
 
 DWORD GetDlgItemBaseInt(HWND hwnd, UINT ctrlid, int base);
-UINT _tstrtoib16(TCHAR *szHexStr);
+UINT _tstrtoib16(WCHAR *szHexStr);
 BOOL EnableDialogTheme(HWND hwnd);
 
 BOOL EnableDebugPrivilege();
 
-TCHAR *GetVersionString(TCHAR *szFileName, TCHAR *szValue, TCHAR *szBuffer, ULONG nLength);
+WCHAR *GetVersionString(WCHAR *szFileName, WCHAR *szValue, WCHAR *szBuffer, ULONG nLength);
 
 #ifdef __cplusplus
 }

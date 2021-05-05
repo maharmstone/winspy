@@ -14,7 +14,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 
 #include "InjectThread.h"
 
@@ -74,8 +73,8 @@ DWORD InjectRemoteThread(HWND hwnd, LPTHREAD_START_ROUTINE lpCode, DWORD cbCodeS
 	// Allocate enough memory in the remote process's address space
 	// to hold the binary image of our injection thread, and
 	// a copy of the INJTHREADINFO structure
-	pVirtualAllocEx = (VA_EX_PROC)GetProcAddress(GetModuleHandle(_T("KERNEL32.DLL")), "VirtualAllocEx");
-	pVirtualFreeEx  = (VF_EX_PROC)GetProcAddress(GetModuleHandle(_T("KERNEL32.DLL")), "VirtualFreeEx");
+	pVirtualAllocEx = (VA_EX_PROC)GetProcAddress(GetModuleHandleW(L"KERNEL32.DLL"), "VirtualAllocEx");
+	pVirtualFreeEx  = (VF_EX_PROC)GetProcAddress(GetModuleHandleW(L"KERNEL32.DLL"), "VirtualFreeEx");
 
 	if(pVirtualAllocEx == 0 || pVirtualFreeEx == 0)
 		return FALSE;

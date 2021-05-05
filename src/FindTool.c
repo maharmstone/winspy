@@ -170,10 +170,10 @@ void FlashWindowBorder(HWND hwnd, BOOL fShowHidden)
 
 void LoadFinderResources()
 {
-	hBitmapDrag1 = LoadBitmap(GetModuleHandle(0), MAKEINTRESOURCE(IDB_DRAGTOOL1));
-	hBitmapDrag2 = LoadBitmap(GetModuleHandle(0), MAKEINTRESOURCE(IDB_DRAGTOOL2));
+	hBitmapDrag1 = LoadBitmapW(GetModuleHandleW(0), MAKEINTRESOURCEW(IDB_DRAGTOOL1));
+	hBitmapDrag2 = LoadBitmapW(GetModuleHandleW(0), MAKEINTRESOURCEW(IDB_DRAGTOOL2));
 
-	hCursor = LoadCursor(GetModuleHandle(0),      MAKEINTRESOURCE(IDC_CURSOR1));
+	hCursor = LoadCursorW(GetModuleHandleW(0),      MAKEINTRESOURCEW(IDC_CURSOR1));
 }
 
 void FreeFinderResources()
@@ -186,7 +186,7 @@ void FreeFinderResources()
 
 WNDFINDPROC GetWndFindProc(HWND hwnd)
 {
-	return (WNDFINDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+	return (WNDFINDPROC)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
 }
 
 UINT FireWndFindNotify(HWND hwndTool, UINT uCode, HWND hwnd)
@@ -215,7 +215,7 @@ LRESULT EndFindToolDrag(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
 	fDragging = FALSE;
-	SendMessage(hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapDrag1);
+	SendMessageW(hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapDrag1);
 
 	return 0;
 }
@@ -238,7 +238,7 @@ static LRESULT CALLBACK draghookproc(int code, WPARAM wParam, LPARAM lParam)
 		{
 			//don't let the current window procedure process a VK_ESCAPE,
 			//because we want it to cancel the mouse capture
-			PostMessage(draghookhwnd, WM_CANCELMODE, 0, 0);
+			PostMessageW(draghookhwnd, WM_CANCELMODE, 0, 0);
 			return -1;
 		}
 
@@ -297,9 +297,9 @@ static LRESULT CALLBACK draghookproc(int code, WPARAM wParam, LPARAM lParam)
 	if(!(state & 0xC0000000))
 	{
 		// Find ASCII character
-		UINT ch = MapVirtualKey((UINT)wParam, 2);
+		UINT ch = MapVirtualKeyW((UINT)wParam, 2);
 
-		if(ch == _T('c') || ch == _T('C'))
+		if(ch == L'c' || ch == L'C')
 		{
 			//InvertWindow(hwndCurrent, fShowHidden);
 			HideSel(hwndCurrent);
@@ -368,7 +368,7 @@ LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		fDragging = TRUE;
 
-		SendMessage(hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapDrag2);
+		SendMessageW(hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapDrag2);
 
 		hwndParent = GetParent(hwnd);
 		hwndCurrent = hwnd;
@@ -384,7 +384,7 @@ LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		// steal focus from current window when we use the drag tool,
 		// so a hook is a stealthier way to monitor key presses
 		draghookhwnd = hwnd;
-		draghook     = SetWindowsHookEx(WH_KEYBOARD, draghookproc, GetModuleHandle(0), 0);
+		draghook     = SetWindowsHookExW(WH_KEYBOARD, draghookproc, GetModuleHandleW(0), 0);
 
 		// Current window has changed
 		FireWndFindNotify(hwnd, WFN_SELCHANGED, hwndCurrent);
@@ -463,7 +463,7 @@ LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 
-	return CallWindowProc(oldstaticproc, hwnd, msg, wParam, lParam);
+	return CallWindowProcW(oldstaticproc, hwnd, msg, wParam, lParam);
 }
 
 
@@ -490,16 +490,16 @@ BOOL MakeFinderTool(HWND hwnd, WNDFINDPROC wfp)
 	dwStyle |= SS_BITMAP;
 
 	// Now apply them..
-	SetWindowLong(hwnd, GWL_STYLE, dwStyle);
+	SetWindowLongW(hwnd, GWL_STYLE, dwStyle);
 
 	// Set the default bitmap
-	SendMessage(hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapDrag1);
+	SendMessageW(hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapDrag1);
 
 	// Set the callback for this control
-	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)wfp);
+	SetWindowLongPtrW(hwnd, GWLP_USERDATA, (LONG_PTR)wfp);
 
 	// Subclass the static control
-	oldstaticproc = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)StaticProc);
+	oldstaticproc = (WNDPROC)SetWindowLongPtrW(hwnd, GWLP_WNDPROC, (LONG_PTR)StaticProc);
 
 	return TRUE;
 }

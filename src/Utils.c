@@ -11,7 +11,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 #include <malloc.h>
 #include "Utils.h"
 
@@ -20,13 +19,13 @@ int atoi( const char *string );
 //
 //	Enable/Disable privilege with specified name (for current process)
 //
-BOOL EnablePrivilege(TCHAR *szPrivName, BOOL fEnable)
+BOOL EnablePrivilege(WCHAR *szPrivName, BOOL fEnable)
 {
 	TOKEN_PRIVILEGES tp;
 	LUID	luid;
 	HANDLE	hToken;
 
-	if(!LookupPrivilegeValue(NULL, szPrivName, &luid))
+	if(!LookupPrivilegeValueW(NULL, szPrivName, &luid))
 		return FALSE;
 
 	if(!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
@@ -46,7 +45,7 @@ BOOL EnablePrivilege(TCHAR *szPrivName, BOOL fEnable)
 
 BOOL EnableDebugPrivilege()
 {
-	return EnablePrivilege(SE_DEBUG_NAME, TRUE);
+    return EnablePrivilege(L"SeDebugPrivilege", TRUE);
 }
 
 
@@ -56,7 +55,7 @@ BOOL EnableDebugPrivilege()
 UINT AddStyle(HWND hwnd, UINT style)
 {
 	UINT oldstyle = GetWindowLong(hwnd, GWL_STYLE);
-	SetWindowLong(hwnd, GWL_STYLE,  oldstyle | style);
+	SetWindowLongW(hwnd, GWL_STYLE,  oldstyle | style);
 	return oldstyle;
 }
 
@@ -68,7 +67,7 @@ UINT AddDlgItemStyle(HWND hwnd, UINT nCtrlId, UINT style)
 UINT DelStyle(HWND hwnd, UINT style)
 {
 	UINT oldstyle = GetWindowLong(hwnd, GWL_STYLE);
-	SetWindowLong(hwnd, GWL_STYLE, oldstyle & ~style);
+	SetWindowLongW(hwnd, GWL_STYLE, oldstyle & ~style);
 	return oldstyle;
 }
 
@@ -102,16 +101,16 @@ int WINAPI GetRectWidth(RECT *rect)
 //	Convert the specified string (with a hex-number in it)
 //  into the equivalent hex-value
 //
-UINT _tstrtoib16(TCHAR *szHexStr)
+UINT _tstrtoib16(WCHAR *szHexStr)
 {
 	UINT  num = 0;
 
-	TCHAR *hexptr = szHexStr;
+	WCHAR *hexptr = szHexStr;
 	UINT  ch = *hexptr++;
 
 	while(isxdigit(ch))
 	{
-		UINT x = ch - _T('0');
+		UINT x = ch - L'0';
 		if(x > 9 && x <= 42) x -= 7;		//A-Z
 		else if(x > 42)   x -= 39;			//a-z
 
@@ -124,9 +123,9 @@ UINT _tstrtoib16(TCHAR *szHexStr)
 
 DWORD GetNumericValue(HWND hwnd, int base)
 {
-	TCHAR szAddressText[128];
+	WCHAR szAddressText[128];
 
-	GetWindowText(hwnd, szAddressText, sizeof(szAddressText) / sizeof(TCHAR));
+	GetWindowTextW(hwnd, szAddressText, sizeof(szAddressText) / sizeof(WCHAR));
 
 	switch(base)
 	{
@@ -136,7 +135,7 @@ DWORD GetNumericValue(HWND hwnd, int base)
 
 	case 0:
 	case 10:			//base is currently decimal
-		return _ttoi(szAddressText);
+		return _wtoi(szAddressText);
 
 	default:
 		return 0;
@@ -169,7 +168,7 @@ BOOL EnableDialogTheme(HWND hwnd)
 	HMODULE hUXTheme;
 	ETDTProc fnEnableThemeDialogTexture;
 
-	hUXTheme = LoadLibrary(_T("uxtheme.dll"));
+	hUXTheme = LoadLibraryW(L"uxtheme.dll");
 
 	if(hUXTheme)
 	{
@@ -206,32 +205,32 @@ BOOL EnableDialogTheme(HWND hwnd)
 //		"FileDescription", "FileVersion", "InternalName",
 //		"ProductName", "ProductVersion", etc  (see MSDN for others)
 //
-TCHAR *GetVersionString(TCHAR *szFileName, TCHAR *szValue, TCHAR *szBuffer, ULONG nLength)
+WCHAR *GetVersionString(WCHAR *szFileName, WCHAR *szValue, WCHAR *szBuffer, ULONG nLength)
 {
-	DWORD  len;
+	UINT  len;
 	PVOID  ver;
 	DWORD  *codepage;
-	TCHAR  fmt[0x40];
+	WCHAR  fmt[0x40];
 	PVOID  ptr = 0;
 	BOOL   result = FALSE;
 
 	szBuffer[0] = '\0';
 
-	len = GetFileVersionInfoSize(szFileName, 0);
+	len = GetFileVersionInfoSizeW(szFileName, 0);
 
 	if(len == 0 || (ver = malloc(len)) == 0)
 		return NULL;
 
-	if(GetFileVersionInfo(szFileName, 0, len, ver))
+	if(GetFileVersionInfoW(szFileName, 0, len, ver))
 	{
-		if(VerQueryValue(ver, TEXT("\\VarFileInfo\\Translation"), &codepage, &len))
+		if(VerQueryValueW(ver, L"\\VarFileInfo\\Translation", (void**)&codepage, &len))
 		{
-			wsprintf(fmt, TEXT("\\StringFileInfo\\%04x%04x\\%s"), (*codepage) & 0xFFFF,
+			wsprintfW(fmt, L"\\StringFileInfo\\%04x%04x\\%s", (*codepage) & 0xFFFF,
 					(*codepage) >> 16, szValue);
 
-			if(VerQueryValue(ver, fmt, &ptr, &len))
+			if(VerQueryValueW(ver, fmt, &ptr, &len))
 			{
-				lstrcpyn(szBuffer, (TCHAR*)ptr, min(nLength, len));
+				lstrcpynW(szBuffer, (WCHAR*)ptr, min(nLength, len));
 				result = TRUE;
 			}
 		}

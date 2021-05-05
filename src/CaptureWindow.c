@@ -137,7 +137,7 @@ static HANDLE BitmapToDIB(HBITMAP hBitmap, HPALETTE hPal)
       return NULL;
 
    /* fill in BITMAP structure, return NULL if it didn't work */
-   if (!GetObject(hBitmap, sizeof(bm), (LPSTR)&bm))
+   if (!GetObjectW(hBitmap, sizeof(bm), (LPSTR)&bm))
       return NULL;
 
    /* if no palette is specified, use default palette */

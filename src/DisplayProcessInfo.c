@@ -13,7 +13,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 #include <psapi.h>
 
 #include "WinSpy.h"
@@ -23,19 +22,19 @@
 
 
 typedef BOOL  (WINAPI * EnumProcessModulesProc )(HANDLE, HMODULE *, DWORD, LPDWORD);
-typedef DWORD (WINAPI * GetModuleBaseNameProc  )(HANDLE, HMODULE, LPTSTR, DWORD);
-typedef DWORD (WINAPI * GetModuleFileNameExProc)(HANDLE, HMODULE, LPTSTR, DWORD);
+typedef DWORD (WINAPI * GetModuleBaseNameProc  )(HANDLE, HMODULE, LPWSTR, DWORD);
+typedef DWORD (WINAPI * GetModuleFileNameExProc)(HANDLE, HMODULE, LPWSTR, DWORD);
 
-BOOL GetProcessNameByPid1(DWORD dwProcessId, TCHAR szName[], DWORD nNameSize, TCHAR szPath[], DWORD nPathSize)
+BOOL GetProcessNameByPid1(DWORD dwProcessId, WCHAR szName[], DWORD nNameSize, WCHAR szPath[], DWORD nPathSize)
 {
 	HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	PROCESSENTRY32 pe = { sizeof(pe) };
+	PROCESSENTRY32W pe = { sizeof(pe) };
 	BOOL fFound = FALSE;
 
 	szPath[0] = '\0';
 	szName[0] = '\0';
 
-	if(Process32First(h, &pe))
+	if(Process32FirstW(h, &pe))
 	{
 		do
 		{
@@ -43,20 +42,20 @@ BOOL GetProcessNameByPid1(DWORD dwProcessId, TCHAR szName[], DWORD nNameSize, TC
 			{
 				if(szName)
 				{
-					lstrcpyn(szName, pe.szExeFile, nNameSize);
+					lstrcpynW(szName, pe.szExeFile, nNameSize);
 				}
 
 				if(szPath)
 				{
 					//OpenProcess(
-					lstrcpyn(szPath, pe.szExeFile, nPathSize);
+					lstrcpynW(szPath, pe.szExeFile, nPathSize);
 				}
 
 				fFound = TRUE;
 				break;
 			}
 		}
-		while(Process32Next(h, &pe));
+		while(Process32NextW(h, &pe));
 	}
 
 	CloseHandle(h);
@@ -75,7 +74,7 @@ BOOL GetProcessNameByPid1(DWORD dwProcessId, TCHAR szName[], DWORD nNameSize, TC
 //  szPath       [out]
 //  nPathSize    [in]
 //
-BOOL GetProcessNameByPid(DWORD dwProcessId, TCHAR szName[], DWORD nNameSize, TCHAR szPath[], DWORD nPathSize)
+BOOL GetProcessNameByPid(DWORD dwProcessId, WCHAR szName[], DWORD nNameSize, WCHAR szPath[], DWORD nPathSize)
 {
 	HMODULE hPSAPI;
 	HANDLE hProcess;
@@ -88,7 +87,7 @@ BOOL GetProcessNameByPid(DWORD dwProcessId, TCHAR szName[], DWORD nNameSize, TCH
 	GetModuleFileNameExProc fnGetModuleFileNameEx;
 
 	// Attempt to load Process Helper library
-	hPSAPI = LoadLibrary(_T("psapi.dll"));
+	hPSAPI = LoadLibraryW(L"psapi.dll");
 
 	if(!hPSAPI)
 	{
@@ -111,13 +110,8 @@ BOOL GetProcessNameByPid(DWORD dwProcessId, TCHAR szName[], DWORD nNameSize, TCH
 
 	fnEnumProcessModules  = (EnumProcessModulesProc)GetProcAddress(hPSAPI, "EnumProcessModules");
 
-#ifdef UNICODE
 	fnGetModuleBaseName   = (GetModuleBaseNameProc)  GetProcAddress(hPSAPI, "GetModuleBaseNameW");
 	fnGetModuleFileNameEx = (GetModuleFileNameExProc)GetProcAddress(hPSAPI, "GetModuleFileNameExW");
-#else
-	fnGetModuleBaseName   = (GetModuleBaseNameProc)  GetProcAddress(hPSAPI, "GetModuleBaseNameA");
-	fnGetModuleFileNameEx = (GetModuleFileNameExProc)GetProcAddress(hPSAPI, "GetModuleFileNameExA");
-#endif
 
 	if(!fnEnumProcessModules || !fnGetModuleBaseName)
 	{
@@ -139,8 +133,8 @@ BOOL GetProcessNameByPid(DWORD dwProcessId, TCHAR szName[], DWORD nNameSize, TCH
 	}
 	else
 	{
-		szName[0] = _T('\0');
-		szPath[0] = _T('\0');
+		szName[0] = 0;
+		szPath[0] = 0;
 	}
 
 	CloseHandle(hProcess);
@@ -156,32 +150,32 @@ void SetProcessInfo(HWND hwnd)
 {
 	DWORD dwProcessId;
 	DWORD dwThreadId;
-	TCHAR ach[32];
-	TCHAR szPath[MAX_PATH];
+	WCHAR ach[32];
+	WCHAR szPath[MAX_PATH];
 
 	HWND  hwndDlg = WinSpyTab[PROCESS_TAB].hwnd;
 
 	dwThreadId = GetWindowThreadProcessId(hwnd, &dwProcessId);
 
 	// Process Id
-	wsprintf(ach, _T("%08X  (%u)"), dwProcessId, dwProcessId);
-	SetDlgItemText(hwndDlg, IDC_PID, ach);
+	wsprintfW(ach, L"%08X  (%u)", dwProcessId, dwProcessId);
+	SetDlgItemTextW(hwndDlg, IDC_PID, ach);
 
 	// Thread Id
-	wsprintf(ach, _T("%08X  (%u)"), dwThreadId, dwThreadId);
-	SetDlgItemText(hwndDlg, IDC_TID, ach);
+	wsprintfW(ach, L"%08X  (%u)", dwThreadId, dwThreadId);
+	SetDlgItemTextW(hwndDlg, IDC_TID, ach);
 
 	// Try to get process name and path
-	if(GetProcessNameByPid(dwProcessId, ach,    sizeof(ach)    / sizeof(TCHAR),
-										szPath, sizeof(szPath) / sizeof(TCHAR)))
+	if(GetProcessNameByPid(dwProcessId, ach,    sizeof(ach)    / sizeof(WCHAR),
+										szPath, sizeof(szPath) / sizeof(WCHAR)))
 	{
-		SetDlgItemText(hwndDlg, IDC_PROCESSNAME, ach);
-		SetDlgItemText(hwndDlg, IDC_PROCESSPATH, szPath);
+		SetDlgItemTextW(hwndDlg, IDC_PROCESSNAME, ach);
+		SetDlgItemTextW(hwndDlg, IDC_PROCESSPATH, szPath);
 	}
 	else
 	{
-		SetDlgItemText(hwndDlg, IDC_PROCESSNAME, _T("N/A"));
-		SetDlgItemText(hwndDlg, IDC_PROCESSNAME, _T("N/A"));
+		SetDlgItemTextW(hwndDlg, IDC_PROCESSNAME, L"N/A");
+		SetDlgItemTextW(hwndDlg, IDC_PROCESSNAME, L"N/A");
 	}
 
 

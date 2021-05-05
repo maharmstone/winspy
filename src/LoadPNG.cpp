@@ -9,19 +9,18 @@
 
 #include <windows.h>
 #include <wincodec.h>
-#include <tchar.h>
 
 #pragma comment(lib, "windowscodecs")
 
 //#import "wincodec.idl" no_namespace
 
 // Creates a stream object initialized with the data from an executable resource.
-IStream * CreateStreamOnResource(LPCTSTR lpName, LPCTSTR lpType)
+IStream * CreateStreamOnResource(LPCWSTR lpName, LPCWSTR lpType)
 {
     IStream * ipStream = NULL;
 
     // find the resource
-    HRSRC hRes = FindResource(NULL, lpName, lpType);
+    HRSRC hRes = FindResourceW(NULL, lpName, lpType);
 	DWORD dwResourceSize;
 	HGLOBAL hglbImage;
 	LPVOID pvSourceResourceData;
@@ -197,7 +196,7 @@ HBITMAP LoadPNGImage(UINT id, OUT VOID **bits)
     HBITMAP hbmpSplash = NULL;
 
     // load the PNG image data into a stream
-    IStream * ipImageStream = CreateStreamOnResource(MAKEINTRESOURCE(id), _T("PNG"));
+    IStream * ipImageStream = CreateStreamOnResource(MAKEINTRESOURCEW(id), L"PNG");
 
     if (ipImageStream == NULL)
         return NULL;

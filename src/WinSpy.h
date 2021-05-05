@@ -7,7 +7,6 @@ extern "C" {
 
 #include <windows.h>
 #include <commctrl.h>
-#include <tchar.h>
 
 #define IDM_WINSPY_ABOUT	100
 
@@ -18,7 +17,7 @@ extern "C" {
 typedef struct
 {
 	HWND    hwnd;
-	LPCTSTR szText;
+	LPCWSTR szText;
 	UINT    id;
 	WNDPROC dlgproc;
 } DialogTab;
@@ -39,7 +38,7 @@ extern DialogTab WinSpyTab[];
 typedef struct
 {
 	UINT    style;
-	LPCTSTR szName;
+	LPCWSTR szName;
 
 } StyleLookupType;
 
@@ -49,7 +48,7 @@ typedef struct
 typedef struct
 {
 	DWORD   style;		// Single window style
-	LPCTSTR name;		// Textual name of style
+	LPCWSTR name;		// Textual name of style
 
 	DWORD   cmp_mask;	// If zero, then -style- is treated as a single bit-field
 						// Otherwise, cmp_mask is used to make sure that
@@ -66,7 +65,7 @@ typedef struct
 //
 //  e.g. STYLE_(WS_CHILD)  ->  WS_CHILD, "WS_CHILD"
 //
-#define STYLE_(style) (UINT)style, _T(#style)
+#define STYLE_(style) (UINT)style, L"" #style
 
 //
 //	Use this structure to list each window class with its
@@ -74,7 +73,7 @@ typedef struct
 //
 typedef struct
 {
-	LPCTSTR        szClassName;
+	LPCWSTR        szClassName;
 	StyleLookupEx  *stylelist;
 	DWORD			dwData;
 } ClassStyleLookup;
@@ -165,18 +164,18 @@ void ShowOptionsDlg			(HWND hwndParent);
 void LoadSettings(void);
 void SaveSettings(void);
 
-BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass,
-						 WNDPROC *pProc, TCHAR *pszText, int nTextLen);
+BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEXW *pClass,
+						 WNDPROC *pProc, WCHAR *pszText, int nTextLen);
 
 BOOL RemoveTabCtrlFlicker(HWND hwndTab);
 
-void VerboseClassName(TCHAR ach[]);
+void VerboseClassName(WCHAR ach[]);
 
 void RefreshTreeView(HWND hwndTree);
 void InitGlobalWindowTree(HWND hwnd);
 void DeInitGlobalWindowTree(HWND hwnd);
 void InitStockStyleLists();
-BOOL GetProcessNameByPid(DWORD dwProcessId, TCHAR szName[], DWORD nNameSize, TCHAR szPath[], DWORD nPathSize);
+BOOL GetProcessNameByPid(DWORD dwProcessId, WCHAR szName[], DWORD nNameSize, WCHAR szPath[], DWORD nPathSize);
 
 //
 //	Pinned-window support
@@ -222,8 +221,8 @@ extern UINT  uPinnedCorner;
 //
 extern HINSTANCE hInst;
 
-extern TCHAR szHexFmt[];
-extern TCHAR szAppName[];
+extern WCHAR szHexFmt[];
+extern WCHAR szAppName[];
 
 extern HWND	 hwndPin;		// Toolbar with pin bitmap
 extern HWND	 hwndSizer;		// Sizing grip for bottom-right corner
@@ -234,11 +233,11 @@ extern HWND	 hwndToolTip;	// tooltip for main window controls only
 //
 //
 extern HWND       spy_hCurWnd;
-extern WNDCLASSEX spy_WndClassEx;
+extern WNDCLASSEXW spy_WndClassEx;
 extern WNDPROC    spy_WndProc;
 extern BOOL       spy_fPassword;
-extern TCHAR      spy_szPassword[];
-extern TCHAR      spy_szClassName[];
+extern WCHAR      spy_szPassword[];
+extern WCHAR      spy_szClassName[];
 
 //
 //	Useful SetWindowPos constants (saves space!)

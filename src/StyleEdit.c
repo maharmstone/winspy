@@ -17,7 +17,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 
 #include "FindTool.h"
 #include "WinSpy.h"
@@ -44,7 +43,7 @@ void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList,
 UINT CALLBACK StyleEditWndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
 {
 	HWND hwndDlg;
-	TCHAR szText[120];
+	WCHAR szText[120];
 
 	DWORD dwStyle;
 
@@ -53,21 +52,21 @@ UINT CALLBACK StyleEditWndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
 	case WFN_END:
 		hwndDlg  = GetParent(hwndTool);
 
-		if(GetClassLong(state.hwndTarget, GCW_ATOM) == GetClassLong(hwnd, GCW_ATOM))
+		if(GetClassLongW(state.hwndTarget, GCW_ATOM) == GetClassLongW(hwnd, GCW_ATOM))
 		{
 			dwStyle = GetWindowLong(hwnd, GWL_STYLE);
 
-			wsprintf(szText, _T("%08X"), dwStyle);
+			wsprintfW(szText, L"%08X", dwStyle);
 
-			SetDlgItemText(hwndDlg, IDC_EDIT1, szText);
+			SetDlgItemTextW(hwndDlg, IDC_EDIT1, szText);
 
 			FillStyleLists(hwnd, GetDlgItem(hwndDlg, IDC_LIST1), 0, TRUE, FALSE);
-			SendDlgItemMessage(hwnd, IDC_LIST1, LB_SETTOPINDEX, 0, 0);
+			SendDlgItemMessageW(hwnd, IDC_LIST1, LB_SETTOPINDEX, 0, 0);
 		}
 		else
 		{
-			wsprintf(szText, _T("Window %08X\n\r\n\rUnable to copy this window's styles, \n\rbecause it belongs to a different class.  "), hwnd);
-			MessageBox(hwndDlg, szText, szAppName, MB_OK|MB_ICONINFORMATION);
+			wsprintfW(szText, L"Window %08X\n\r\n\rUnable to copy this window's styles, \n\rbecause it belongs to a different class.  ", hwnd);
+			MessageBoxW(hwndDlg, szText, szAppName, MB_OK|MB_ICONINFORMATION);
 		}
 
 		break;
@@ -83,7 +82,7 @@ INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 	HWND hwndList;
 
 	DWORD dwStyle = 0;
-	TCHAR szText[32];
+	WCHAR szText[32];
 
 	switch(iMsg)
 	{
@@ -99,7 +98,7 @@ INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 		else
 			FillStyleLists(state->hwndTarget, hwndList, NULL, TRUE, FALSE);
 
-		SendMessage(hwndList, LB_SETTOPINDEX, 0, 0);
+		SendMessageW(hwndList, LB_SETTOPINDEX, 0, 0);
 
 		MakeFinderTool(GetDlgItem(hwnd, IDC_DRAGGER), StyleEditWndFindProc);
 
@@ -108,8 +107,8 @@ INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 		else
 			dwStyle = GetWindowLong(state->hwndTarget, GWL_STYLE);
 
-		wsprintf(szText, _T("%08X"), dwStyle);
-		SetDlgItemText(hwnd, IDC_EDIT1, szText);
+		wsprintfW(szText, L"%08X", dwStyle);
+		SetDlgItemTextW(hwnd, IDC_EDIT1, szText);
 
 		return TRUE;
 
@@ -136,9 +135,9 @@ INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 			dwStyle = GetDlgItemBaseInt(hwnd, IDC_EDIT1, 16);
 
 			if(state->fExtended)
-				SetWindowLong(state->hwndTarget, GWL_EXSTYLE, dwStyle);
+				SetWindowLongW(state->hwndTarget, GWL_EXSTYLE, dwStyle);
 			else
-				SetWindowLong(state->hwndTarget, GWL_STYLE, dwStyle);
+				SetWindowLongW(state->hwndTarget, GWL_STYLE, dwStyle);
 
 			SetWindowPos(state->hwndTarget, 0,
 				0,0,0,0,
@@ -155,7 +154,7 @@ INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 
 		case IDC_CLEAR:
 			//remove selection from all items
-			SendDlgItemMessage(hwnd, IDC_LIST1, LB_SETSEL, FALSE, (LONG)-1);
+			SendDlgItemMessageW(hwnd, IDC_LIST1, LB_SETSEL, FALSE, (LONG)-1);
 			return TRUE;
 
 		}
@@ -171,16 +170,16 @@ INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 
 				dwStyle  = GetDlgItemBaseInt(hwnd, IDC_EDIT1, 16);
 
-				caretidx = (int)SendMessage(hwndList, LB_GETCARETINDEX, 0, 0);
-				cursel   = (int)SendMessage(hwndList, LB_GETSEL, caretidx, 0);
+				caretidx = (int)SendMessageW(hwndList, LB_GETCARETINDEX, 0, 0);
+				cursel   = (int)SendMessageW(hwndList, LB_GETSEL, caretidx, 0);
 
 				if(cursel)
-					dwStyle |=  SendMessage(hwndList, LB_GETITEMDATA, caretidx, 0);
+					dwStyle |=  SendMessageW(hwndList, LB_GETITEMDATA, caretidx, 0);
 				else
-					dwStyle &= ~SendMessage(hwndList, LB_GETITEMDATA, caretidx, 0);
+					dwStyle &= ~SendMessageW(hwndList, LB_GETITEMDATA, caretidx, 0);
 
-				wsprintf(szText, _T("%08X"), dwStyle);
-				SetDlgItemText(hwnd, IDC_EDIT1, szText);
+				wsprintfW(szText, L"%08X", dwStyle);
+				SetDlgItemTextW(hwnd, IDC_EDIT1, szText);
 
 				return TRUE;
 			}
@@ -200,7 +199,7 @@ void ShowWindowStyleEditor(HWND hwndParent, HWND hwndTarget, BOOL fExtended)
 	state.dwStyle    = 0;
 	state.fExtended  = fExtended;
 
-	DialogBoxParam(GetModuleHandle(0), MAKEINTRESOURCE(IDD_STYLE_EDIT), hwndParent, StyleEditProc, (LPARAM)&state);
+	DialogBoxParamW(GetModuleHandleW(0), MAKEINTRESOURCEW(IDD_STYLE_EDIT), hwndParent, StyleEditProc, (LPARAM)&state);
 
 	// Update the main display
 	SetGeneralInfo(hwndTarget);

@@ -23,7 +23,6 @@
 #define _WIN32_WINNT 0x0501
 
 #include <windows.h>
-#include <tchar.h>
 #include <uxtheme.h>
 #include <tmschema.h>
 #include "BitmapButton.h"
@@ -67,7 +66,7 @@ HRESULT _CloseThemeData(HTHEME hTheme)
 //
 static LRESULT CALLBACK BBProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	WNDPROC oldproc = (WNDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+	WNDPROC oldproc = (WNDPROC)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
 	TRACKMOUSEEVENT tme = { sizeof(tme) };
 
 	static BOOL mouseOver;
@@ -121,7 +120,7 @@ static LRESULT CALLBACK BBProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 	}
 
-	return CallWindowProc(oldproc, hwnd, msg, wParam, lParam);
+	return CallWindowProcW(oldproc, hwnd, msg, wParam, lParam);
 }
 
 //BOOL DrawThemedBitmapButton(DRAWITEMSTRUCT *dis)
@@ -161,7 +160,7 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 	int sxIcon, syIcon;	// Icon size
 	int xoff, yoff;		//
 
-	TCHAR szText[100];
+	WCHAR szText[100];
 	int   nTextLen;
 
 	HICON hIcon;
@@ -192,12 +191,12 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 	case ODA_DRAWENTIRE:
 
 		// Retrieve button text
-		GetWindowText(dis->hwndItem, szText, sizeof(szText) / sizeof(TCHAR));
+		GetWindowTextW(dis->hwndItem, szText, sizeof(szText) / sizeof(WCHAR));
 
-		nTextLen = lstrlen(szText);
+		nTextLen = lstrlenW(szText);
 
 		// Retrieve button icon
-		hIcon = (HICON)SendMessage(dis->hwndItem, BM_GETIMAGE, IMAGE_ICON, 0);
+		hIcon = (HICON)SendMessageW(dis->hwndItem, BM_GETIMAGE, IMAGE_ICON, 0);
 
 		// Find icon dimensions
 		sxIcon = 16;
@@ -302,7 +301,7 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 		// Draw the text
 		OffsetRect(&rect, 0, -1);
 		SetBkMode(dis->hDC, TRANSPARENT);
-		DrawText(dis->hDC, szText, -1, &rect, dwDTflags);
+		DrawTextW(dis->hDC, szText, -1, &rect, dwDTflags);
 		OffsetRect(&rect, 0, 1);
 
 		// Draw the focus rectangle (only if text present)
@@ -341,21 +340,21 @@ void MakeBitmapButton(HWND hwnd, UINT uIconId)
 	WNDPROC oldproc;
 	DWORD   dwStyle;
 
-	HICON hIcon = (HICON)LoadImage(GetModuleHandle(0),
-		MAKEINTRESOURCE(uIconId), IMAGE_ICON, 16, 16, 0);
+	HICON hIcon = (HICON)LoadImageW(GetModuleHandleW(0),
+		MAKEINTRESOURCEW(uIconId), IMAGE_ICON, 16, 16, 0);
 
 	// Add on BS_ICON and BS_OWNERDRAW styles
 	dwStyle = GetWindowLong(hwnd, GWL_STYLE);
-	SetWindowLong(hwnd, GWL_STYLE, dwStyle | BS_ICON | BS_OWNERDRAW);
+	SetWindowLongW(hwnd, GWL_STYLE, dwStyle | BS_ICON | BS_OWNERDRAW);
 
 	// Assign icon to the button
-	SendMessage(hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+	SendMessageW(hwnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
 
 	// Subclass (to reenable double-clicks)
-	oldproc = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)BBProc);
+	oldproc = (WNDPROC)SetWindowLongPtrW(hwnd, GWLP_WNDPROC, (LONG_PTR)BBProc);
 
 	// Store old procedure
-	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)oldproc);
+	SetWindowLongPtrW(hwnd, GWLP_USERDATA, (LONG_PTR)oldproc);
 
 	if(g_fThemeApiAvailable)
 		SetWindowTheme(hwnd, L"explorer", NULL);
@@ -366,7 +365,7 @@ void MakeBitmapButton(HWND hwnd, UINT uIconId)
 //
 void MakeDlgBitmapButton(HWND hwndDlg, UINT uCtrlId, UINT uIconId)
 {
-	if(GetModuleHandle(_T("uxtheme.dll")))
+	if(GetModuleHandleW(L"uxtheme.dll"))
 		g_fThemeApiAvailable = TRUE;
 	else
 		g_fThemeApiAvailable = FALSE;

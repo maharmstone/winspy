@@ -11,7 +11,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 
 #include "WinSpy.h"
 #include "RegHelper.h"
@@ -34,32 +33,32 @@ extern UINT  uPinnedCorner;
 
 extern HWND hwndToolTip;
 
-#define REG_BASESTR  _T("Software\\Catch22\\WinSpy++ 1.5")
+#define REG_BASESTR  L"Software\\Catch22\\WinSpy++ 1.5"
 
-static TCHAR szRegLoc[] = REG_BASESTR;
+static WCHAR szRegLoc[] = REG_BASESTR;
 
 void LoadSettings(void)
 {
 	HKEY hkey;
 
-	RegCreateKeyEx(HKEY_CURRENT_USER, szRegLoc, 0, _T(""), 0, KEY_READ, NULL, &hkey, NULL);
+	RegCreateKeyExW(HKEY_CURRENT_USER, szRegLoc, 0, L"", 0, KEY_READ, NULL, &hkey, NULL);
 
-	fSaveWinPos     = GetSettingBool(hkey, _T("SavePosition"),		TRUE);
-	fAlwaysOnTop    = GetSettingBool(hkey, _T("AlwaysOnTop"),		FALSE);
-	fMinimizeWinSpy = GetSettingBool(hkey, _T("MinimizeWinSpy"),	TRUE);
-	fFullDragging   = GetSettingBool(hkey, _T("FullDragging"),		TRUE);
-	fShowHidden     = GetSettingBool(hkey, _T("ShowHidden"),		FALSE);
-	fShowDimmed     = GetSettingBool(hkey, _T("ShowDimmed"),		TRUE);
-	fClassThenText  = GetSettingBool(hkey, _T("ClassThenText"),     TRUE);
-	fPinWindow      = GetSettingBool(hkey, _T("PinWindow"),         FALSE);
-	fShowInCaption  = GetSettingBool(hkey, _T("ShowInCaption"),     TRUE);
-	fEnableToolTips = GetSettingBool(hkey, _T("EnableToolTips"),	FALSE);
-	uTreeInclude    = GetSettingInt (hkey, _T("TreeItems"), WINLIST_INCLUDE_ALL);
+	fSaveWinPos     = GetSettingBool(hkey, L"SavePosition",		TRUE);
+	fAlwaysOnTop    = GetSettingBool(hkey, L"AlwaysOnTop",		FALSE);
+	fMinimizeWinSpy = GetSettingBool(hkey, L"MinimizeWinSpy",	TRUE);
+	fFullDragging   = GetSettingBool(hkey, L"FullDragging",		TRUE);
+	fShowHidden     = GetSettingBool(hkey, L"ShowHidden",		FALSE);
+	fShowDimmed     = GetSettingBool(hkey, L"ShowDimmed",		TRUE);
+	fClassThenText  = GetSettingBool(hkey, L"ClassThenText",     TRUE);
+	fPinWindow      = GetSettingBool(hkey, L"PinWindow",         FALSE);
+	fShowInCaption  = GetSettingBool(hkey, L"ShowInCaption",     TRUE);
+	fEnableToolTips = GetSettingBool(hkey, L"EnableToolTips",	FALSE);
+	uTreeInclude    = GetSettingInt (hkey, L"TreeItems", WINLIST_INCLUDE_ALL);
 
-	uPinnedCorner   = GetSettingInt (hkey, _T("PinCorner"),         0);
+	uPinnedCorner   = GetSettingInt (hkey, L"PinCorner",         0);
 
-	ptPinPos.x      = GetSettingInt(hkey,  _T("xpos"), CW_USEDEFAULT);
-	ptPinPos.y      = GetSettingInt(hkey,  _T("ypos"), CW_USEDEFAULT);
+	ptPinPos.x      = GetSettingInt(hkey,  L"xpos", CW_USEDEFAULT);
+	ptPinPos.y      = GetSettingInt(hkey,  L"ypos", CW_USEDEFAULT);
 
 	RegCloseKey(hkey);
 }
@@ -68,23 +67,23 @@ void SaveSettings(void)
 {
 	HKEY hkey;
 
-	RegCreateKeyEx(HKEY_CURRENT_USER, szRegLoc, 0, _T(""), 0, KEY_WRITE, NULL, &hkey, NULL);
+	RegCreateKeyExW(HKEY_CURRENT_USER, szRegLoc, 0, L"", 0, KEY_WRITE, NULL, &hkey, NULL);
 
-	WriteSettingBool(hkey, _T("SavePosition"),		fSaveWinPos);
-	WriteSettingBool(hkey, _T("AlwaysOnTop"),		fAlwaysOnTop);
-	WriteSettingBool(hkey, _T("MinimizeWinSpy"),	fMinimizeWinSpy);
-	WriteSettingBool(hkey, _T("FullDragging"),		fFullDragging);
-	WriteSettingBool(hkey, _T("ShowHidden"),		fShowHidden);
-	WriteSettingBool(hkey, _T("ShowDimmed"),		fShowDimmed);
-	WriteSettingBool(hkey, _T("ClassThenText"),     fClassThenText);
-	WriteSettingBool(hkey, _T("PinWindow"),         fPinWindow);
-	WriteSettingBool(hkey, _T("ShowInCaption"),     fShowInCaption);
-	WriteSettingBool(hkey, _T("EnableToolTips"),    fEnableToolTips);
-	WriteSettingInt (hkey, _T("TreeItems"),         uTreeInclude);
-	WriteSettingInt (hkey, _T("PinCorner"),         uPinnedCorner);
+	WriteSettingBool(hkey, L"SavePosition",		fSaveWinPos);
+	WriteSettingBool(hkey, L"AlwaysOnTop",		fAlwaysOnTop);
+	WriteSettingBool(hkey, L"MinimizeWinSpy",	fMinimizeWinSpy);
+	WriteSettingBool(hkey, L"FullDragging",		fFullDragging);
+	WriteSettingBool(hkey, L"ShowHidden",		fShowHidden);
+	WriteSettingBool(hkey, L"ShowDimmed",		fShowDimmed);
+	WriteSettingBool(hkey, L"ClassThenText",     fClassThenText);
+	WriteSettingBool(hkey, L"PinWindow",         fPinWindow);
+	WriteSettingBool(hkey, L"ShowInCaption",     fShowInCaption);
+	WriteSettingBool(hkey, L"EnableToolTips",    fEnableToolTips);
+	WriteSettingInt (hkey, L"TreeItems",         uTreeInclude);
+	WriteSettingInt (hkey, L"PinCorner",         uPinnedCorner);
 
-	WriteSettingInt (hkey, _T("xpos"),              ptPinPos.x);
-	WriteSettingInt (hkey, _T("ypos"),              ptPinPos.y);
+	WriteSettingInt (hkey, L"xpos",              ptPinPos.x);
+	WriteSettingInt (hkey, L"ypos",              ptPinPos.y);
 
 	RegCloseKey(hkey);
 }
@@ -152,12 +151,12 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 
 void ShowOptionsDlg(HWND hwndParent)
 {
-	DialogBox(GetModuleHandle(0), MAKEINTRESOURCE(IDD_OPTIONS), hwndParent, OptionsDlgProc);
+	DialogBoxW(GetModuleHandleW(0), MAKEINTRESOURCEW(IDD_OPTIONS), hwndParent, OptionsDlgProc);
 
 	if(!fShowInCaption)
 	{
-		SetWindowText(hwndParent, szAppName);
+		SetWindowTextW(hwndParent, szAppName);
 	}
 
-	SendMessage(hwndToolTip, TTM_ACTIVATE, fEnableToolTips, 0);
+	SendMessageW(hwndToolTip, TTM_ACTIVATE, fEnableToolTips, 0);
 }

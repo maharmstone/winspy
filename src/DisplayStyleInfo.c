@@ -34,7 +34,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 #include <richedit.h>
 #include "resource.h"
 #include "WinSpy.h"
@@ -71,7 +70,7 @@ StyleLookupEx WindowStyles[] =
 	STYLE_(WS_MINIMIZEBOX),			0, WS_POPUPWINDOW|WS_OVERLAPPEDWINDOW|WS_CAPTION, 0, //0x00020000
 	STYLE_(WS_MAXIMIZEBOX),			0, WS_POPUPWINDOW|WS_OVERLAPPEDWINDOW|WS_CAPTION, 0, //0x00010000
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Dialog box styles (class = #32770)
@@ -97,7 +96,7 @@ StyleLookupEx DialogStyles[] =
 
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Button styles (Button)
@@ -132,7 +131,7 @@ StyleLookupEx ButtonStyles[] =
 	STYLE_(BS_FLAT),				0, -1, 0,			//0x8000
 	STYLE_(BS_RIGHTBUTTON),			0, -1, 0,			//BS_LEFTTEXT
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Edit styles (Edit)
@@ -153,7 +152,7 @@ StyleLookupEx EditStyles[] =
 	STYLE_(ES_WANTRETURN),			0, -1, 0,						//0x1000
 	STYLE_(ES_NUMBER),				0, -1, 0,						//0x2000
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 StyleLookupEx RichedStyles[] =
@@ -182,7 +181,7 @@ StyleLookupEx RichedStyles[] =
 	STYLE_(ES_SELECTIONBAR),		0, -1, 0,				//0x01000000
 	STYLE_(ES_NOOLEDRAGDROP),		0, -1, 0,				//0x00000008
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 
 };
 
@@ -206,7 +205,7 @@ StyleLookupEx ComboStyles[] =
 	STYLE_(CBS_LOWERCASE),			0, -1, 0,		//0x2000
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Listbox styles (Listbox)
@@ -228,7 +227,7 @@ StyleLookupEx ListBoxStyles[] =
 	STYLE_(LBS_NODATA),				0, -1, 0,		//0x2000
 	STYLE_(LBS_NOSEL),				0, -1, 0,		//0x4000
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Scrollbar control styles (Scrollbar)
@@ -245,7 +244,7 @@ StyleLookupEx ScrollbarStyles[] =
 	STYLE_(SBS_SIZEBOX),					0, -1, 0,									//0x0008
 	STYLE_(SBS_SIZEGRIP),					0, -1, 0,									//0x0010
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Static control styles (Static)
@@ -284,7 +283,7 @@ StyleLookupEx StaticStyles[] =
 	STYLE_(SS_WORDELLIPSIS),		0,    -1, 0,				//0xC000
 	STYLE_(SS_ELLIPSISMASK),		0,    -1, 0,				//0xC000
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 //	Standard Common controls styles
@@ -303,7 +302,7 @@ StyleLookupEx CommCtrlList[] =
 	STYLE_(CCS_VERT),				0,   -1, 0,			//0x0080
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 //  DragList - uses same styles as listview
@@ -326,7 +325,7 @@ StyleLookupEx HeaderStyles[] =
 	STYLE_(HDS_FILTERBAR),			0, -1, 0,			//0x0100
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Listview (SysListView32)
@@ -362,7 +361,7 @@ StyleLookupEx ListViewStyles[] =
 	STYLE_(LVS_NOCOLUMNHEADER),		0, -1, 0,		//0x4000
 	STYLE_(LVS_NOSORTHEADER),		0, -1, 0,		//0x8000
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Toolbar control (ToolbarWindow32)
@@ -383,7 +382,7 @@ StyleLookupEx ToolbarStyles[] =
 	STYLE_(TBSTYLE_TRANSPARENT),	0, -1, 0,		//0x8000
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Rebar control (RebarControl32)
@@ -400,7 +399,7 @@ StyleLookupEx RebarStyles[] =
 	STYLE_(RBS_DBLCLKTOGGLE),		0, -1, 0,		//0x8000
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Track Bar control (msctls_trackbar32)
@@ -428,7 +427,7 @@ StyleLookupEx TrackbarStyles[] =
 	STYLE_(TBS_REVERSED),			0, -1, 0,				//0x0200
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Treeview (SysTreeView32)
@@ -461,7 +460,7 @@ StyleLookupEx TreeViewStyles[] =
 #endif
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Tooltips (tooltips_class32)
@@ -476,7 +475,7 @@ StyleLookupEx ToolTipStyles[] =
 	STYLE_(TTS_BALLOON),			0, -1, 0,			//0x40
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Statusbar (msctls_statusbar32)
@@ -488,7 +487,7 @@ StyleLookupEx StatusBarStyles[] =
 	STYLE_(SBT_TOOLTIPS),			0, -1, 0,			//0x0800
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Updown control
@@ -507,7 +506,7 @@ StyleLookupEx UpDownStyles[] =
 	STYLE_(UDS_HOTTRACK),			0, -1, 0,			//0x0100
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Progress control (msctls_progress32)
@@ -518,7 +517,7 @@ StyleLookupEx ProgressStyles[] =
 	STYLE_(PBS_VERTICAL),			0, -1, 0,			//0x04
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Tab control (SysTabControl32)
@@ -551,7 +550,7 @@ StyleLookupEx TabStyles[] =
 	STYLE_(TCS_TOOLTIPS),			0, -1, 0,			//0x4000
 	STYLE_(TCS_FOCUSNEVER),			0, -1, 0,			//0x8000
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Animation control (SysAnimate32)
@@ -565,7 +564,7 @@ StyleLookupEx AnimateStyles[] =
 	STYLE_(ACS_TIMER),				0, -1, 0,			//0x0008
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Month-calendar control (SysMonthCal32)
@@ -580,7 +579,7 @@ StyleLookupEx MonthCalStyles[] =
 	STYLE_(MCS_NOTODAY),			0, -1, 0,			//0x0010
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Date-Time picker (SysDateTimePick32)
@@ -599,7 +598,7 @@ StyleLookupEx DateTimeStyles[] =
 	STYLE_(DTS_APPCANPARSE),		0, -1, 0,			//0x0010
 	STYLE_(DTS_RIGHTALIGN),			0, -1, 0,			//0x0020
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Pager control (SysPager)
@@ -611,7 +610,7 @@ StyleLookupEx PagerStyles[] =
 	STYLE_(PGS_AUTOSCROLL),			0, -1, 0,			//0x0002
 	STYLE_(PGS_DRAGNDROP),			0, -1, 0,			//0x0004
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Extended window styles (for all windows)
@@ -647,7 +646,7 @@ StyleLookupEx StyleExList[] =
 
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // ListView extended styles
@@ -674,7 +673,7 @@ StyleLookupEx ListViewExStyles[] =
 	STYLE_(LVS_EX_LABELTIP),			0, -1, 0,		//0x00004000
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // ComboBoxEx extended styles
@@ -689,7 +688,7 @@ StyleLookupEx ComboBoxExStyles[] =
 	STYLE_(CBES_EX_CASESENSITIVE),		0, -1, 0,	//0x00000010
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Tab control extended styles
@@ -697,7 +696,7 @@ StyleLookupEx TabCtrlExStyles[] =
 {
 	STYLE_(TCS_EX_FLATSEPARATORS),			0, -1, 0,	//0x00000001
 	STYLE_(TCS_EX_REGISTERDROP),			0, -1, 0,	//0x00000002
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Toolbar extended styles
@@ -713,7 +712,7 @@ StyleLookupEx ToolBarExStyles[] =
 #endif
 #endif
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 // Support RichEdit Event masks!!!
@@ -739,7 +738,7 @@ StyleLookupEx RichedEventMask[] =
 	STYLE_(ENM_OBJECTPOSITIONS),	0, -1, 0,	//0x02000000
 	STYLE_(ENM_LINK),				0, -1, 0,	//0x04000000
 
-	-1, _T(""), -1, -1, -1
+	-1, L"", -1, -1, -1
 };
 
 //
@@ -747,65 +746,65 @@ StyleLookupEx RichedEventMask[] =
 //
 ClassStyleLookup StandardControls[] =
 {
-	_T("#32770"), 				DialogStyles,		0,
-	_T("Button"),				ButtonStyles,		0,
-	_T("ComboBox"),				ComboStyles,		0,
-	_T("Edit"),					EditStyles,			0,
-	_T("ListBox"),				ListBoxStyles,		0,
+	L"#32770", 				DialogStyles,		0,
+	L"Button",				ButtonStyles,		0,
+	L"ComboBox",				ComboStyles,		0,
+	L"Edit",					EditStyles,			0,
+	L"ListBox",				ListBoxStyles,		0,
 
-	_T("RICHEDIT"),				RichedStyles,		0,
-	_T("RichEdit20A"),			RichedStyles,		0,
-	_T("RichEdit20W"),			RichedStyles,		0,
+	L"RICHEDIT",				RichedStyles,		0,
+	L"RichEdit20A",			RichedStyles,		0,
+	L"RichEdit20W",			RichedStyles,		0,
 
-	_T("Scrollbar"),			ScrollbarStyles,	0,
-	_T("Static"),				StaticStyles,		0,
+	L"Scrollbar",			ScrollbarStyles,	0,
+	L"Static",				StaticStyles,		0,
 
-	_T("SysAnimate32"),			AnimateStyles,		0,
-	_T("ComboBoxEx"),			ComboStyles,		0,	//(Just a normal combobox)
-	_T("SysDateTimePick32"),	DateTimeStyles,		0,
-	_T("DragList"),				ListBoxStyles,		0,	//(Just a normal list)
-	_T("SysHeader32"),			HeaderStyles,		0,
+	L"SysAnimate32",			AnimateStyles,		0,
+	L"ComboBoxEx",			ComboStyles,		0,	//(Just a normal combobox)
+	L"SysDateTimePick32",	DateTimeStyles,		0,
+	L"DragList",				ListBoxStyles,		0,	//(Just a normal list)
+	L"SysHeader32",			HeaderStyles,		0,
 	//"SysIPAddress32",			IPAddressStyles,	0,	(NO STYLES)
-	_T("SysListView32"),		ListViewStyles,		0,
-	_T("SysMonthCal32"),		MonthCalStyles,		0,
-	_T("SysPager"),				PagerStyles,		0,
-	_T("msctls_progress32"),	ProgressStyles,		0,
-	_T("RebarWindow32"),		RebarStyles,		0,
-	_T("msctls_statusbar32"),	StatusBarStyles,	0,
+	L"SysListView32",		ListViewStyles,		0,
+	L"SysMonthCal32",		MonthCalStyles,		0,
+	L"SysPager",				PagerStyles,		0,
+	L"msctls_progress32",	ProgressStyles,		0,
+	L"RebarWindow32",		RebarStyles,		0,
+	L"msctls_statusbar32",	StatusBarStyles,	0,
 	//"SysLink",				SysLinkStyles,		0,  (DO IT!)
-	_T("SysTabControl32"),		TabStyles,			0,
-	_T("ToolbarWindow32"),		ToolbarStyles,		0,
-	_T("tooltips_class32"),		ToolTipStyles,		0,
-	_T("msctls_trackbar32"),	TrackbarStyles,		0,
-	_T("SysTreeView32"),		TreeViewStyles,		0,
-	_T("msctls_updown32"),		UpDownStyles,		0,
+	L"SysTabControl32",		TabStyles,			0,
+	L"ToolbarWindow32",		ToolbarStyles,		0,
+	L"tooltips_class32",		ToolTipStyles,		0,
+	L"msctls_trackbar32",	TrackbarStyles,		0,
+	L"SysTreeView32",		TreeViewStyles,		0,
+	L"msctls_updown32",		UpDownStyles,		0,
 
-	_T(""),						0,					0,
+	L"",						0,					0,
 };
 
 // Classes which use the CCS_xxx styles
 ClassStyleLookup CustomControls[] =
 {
-	_T("msctls_statusbar32"),	CommCtrlList,		0,
-	_T("RebarWindow32"),		CommCtrlList,		0,
-	_T("ToolbarWindow32"),		CommCtrlList,		0,
-	_T("SysHeader32"),			CommCtrlList,		0,
+	L"msctls_statusbar32",	CommCtrlList,		0,
+	L"RebarWindow32",		CommCtrlList,		0,
+	L"ToolbarWindow32",		CommCtrlList,		0,
+	L"SysHeader32",			CommCtrlList,		0,
 
-	_T(""),						0,					0,
+	L"",						0,					0,
 };
 
 // Classes which have extended window styles
 ClassStyleLookup ExtendedControls[] =
 {
-	_T("SysTabControl32"),		TabCtrlExStyles,	TCM_GETEXTENDEDSTYLE,
-	_T("ToolbarWindow32"),		ToolBarExStyles,	TB_GETEXTENDEDSTYLE,
-	_T("ComboBox"),				ComboBoxExStyles,	CBEM_GETEXTENDEDSTYLE,
-	_T("SysListView32"),		ListViewExStyles,	LVM_GETEXTENDEDLISTVIEWSTYLE,
-	_T("RICHEDIT"),				RichedEventMask,    EM_GETEVENTMASK,
-	_T("RichEdit20A"),			RichedEventMask,    EM_GETEVENTMASK,
-	_T("RichEdit20W"),			RichedEventMask,    EM_GETEVENTMASK,
+	L"SysTabControl32",		TabCtrlExStyles,	TCM_GETEXTENDEDSTYLE,
+	L"ToolbarWindow32",		ToolBarExStyles,	TB_GETEXTENDEDSTYLE,
+	L"ComboBox",				ComboBoxExStyles,	CBEM_GETEXTENDEDSTYLE,
+	L"SysListView32",		ListViewExStyles,	LVM_GETEXTENDEDLISTVIEWSTYLE,
+	L"RICHEDIT",				RichedEventMask,    EM_GETEVENTMASK,
+	L"RichEdit20A",			RichedEventMask,    EM_GETEVENTMASK,
+	L"RichEdit20W",			RichedEventMask,    EM_GETEVENTMASK,
 
-	_T(""),						0,					0,
+	L"",						0,					0,
 };
 
 //
@@ -814,13 +813,13 @@ ClassStyleLookup ExtendedControls[] =
 // pClassList - a lookup table of classname / matching stylelist
 //
 //
-StyleLookupEx *FindStyleList(ClassStyleLookup *pClassList, TCHAR *szClassName, DWORD *pdwData)
+StyleLookupEx *FindStyleList(ClassStyleLookup *pClassList, WCHAR *szClassName, DWORD *pdwData)
 {
 	int i;
 
 	for(i = 0; pClassList[i].stylelist != 0; i++)
 	{
-		if(lstrcmpi(szClassName, pClassList[i].szClassName) == 0)
+		if(lstrcmpiW(szClassName, pClassList[i].szClassName) == 0)
 		{
 			if(pdwData) *pdwData = pClassList[i].dwData;
 			return pClassList[i].stylelist;
@@ -902,11 +901,11 @@ DWORD EnumStyles(StyleLookupEx *StyleList, HWND hwndList, DWORD dwStyle, BOOL fA
 				dwStyle &= ~ (pStyle->style);
 
 			// Add to list, and set the list's extra item data to the style's value
-			idx = (int)SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)pStyle->name);
-			SendMessage(hwndList, LB_SETITEMDATA, idx, pStyle->style);
+			idx = (int)SendMessageW(hwndList, LB_ADDSTRING, 0, (LPARAM)pStyle->name);
+			SendMessageW(hwndList, LB_SETITEMDATA, idx, pStyle->style);
 
 			if(fAllStyles)
-				SendMessage(hwndList, LB_SETSEL, fAddIt, idx);
+				SendMessageW(hwndList, LB_SETSEL, fAddIt, idx);
 		}
 	}
 
@@ -923,7 +922,7 @@ DWORD EnumStyles(StyleLookupEx *StyleList, HWND hwndList, DWORD dwStyle, BOOL fA
 //
 void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList, BOOL fAllStyles, BOOL fExtControl)
 {
-	TCHAR szClassName[256];
+	WCHAR szClassName[256];
 	DWORD dwStyle;
 	DWORD dwStyleEx;
 	DWORD dwMessage;
@@ -931,7 +930,7 @@ void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList, B
 	StyleLookupEx *StyleList;
 
 	//window class
-	GetClassName(hwndTarget, szClassName, sizeof(szClassName) / sizeof(TCHAR));
+	GetClassNameW(hwndTarget, szClassName, sizeof(szClassName) / sizeof(WCHAR));
 
 	//normal window styles
 	dwStyle = GetWindowLong(hwndTarget, GWL_STYLE);
@@ -939,7 +938,7 @@ void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList, B
 	if(hwndStyleList != 0)
 	{
 		// Empty the list
-		SendMessage(hwndStyleList, LB_RESETCONTENT, 0, 0);
+		SendMessageW(hwndStyleList, LB_RESETCONTENT, 0, 0);
 
 		// enumerate the standard window styles, for any window no
 		// matter what class it might be
@@ -963,14 +962,14 @@ void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList, B
 		if(dwStyle != 0)
 		{
 			int idx;
-			TCHAR ach[10];
+			WCHAR ach[10];
 
-			wsprintf(ach, szHexFmt, dwStyle);
-			idx = (int)SendMessage(hwndStyleList, LB_ADDSTRING, 0, (LPARAM)ach);
-			SendMessage(hwndStyleList, LB_SETITEMDATA, idx, dwStyle);
+			wsprintfW(ach, szHexFmt, dwStyle);
+			idx = (int)SendMessageW(hwndStyleList, LB_ADDSTRING, 0, (LPARAM)ach);
+			SendMessageW(hwndStyleList, LB_SETITEMDATA, idx, dwStyle);
 
 			if(fAllStyles)
-				SendMessage(hwndStyleList, LB_SETSEL, TRUE, idx);
+				SendMessageW(hwndStyleList, LB_SETSEL, TRUE, idx);
 		}
 
 	}
@@ -979,7 +978,7 @@ void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList, B
 	if(hwndExStyleList != 0)
 	{
 		// Empty the list
-		SendMessage(hwndExStyleList, LB_RESETCONTENT, 0, 0);
+		SendMessageW(hwndExStyleList, LB_RESETCONTENT, 0, 0);
 
 		// Find extended styles
 		dwStyleEx = GetWindowLong(hwndTarget, GWL_EXSTYLE);
@@ -996,7 +995,7 @@ void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList, B
 			// Add them if required
 			if(StyleList != 0)
 			{
-				dwStyleEx = (DWORD)SendMessage(hwndTarget, dwMessage, 0, 0);
+				dwStyleEx = (DWORD)SendMessageW(hwndTarget, dwMessage, 0, 0);
 				EnumStyles(StyleList, hwndExStyleList, dwStyleEx, fAllStyles);
 			}
 		}
@@ -1008,7 +1007,7 @@ void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList, B
 //
 void SetStyleInfo(HWND hwnd)
 {
-	TCHAR ach[12];
+	WCHAR ach[12];
 	DWORD dwStyle;
 
 	HWND hwndDlg = WinSpyTab[STYLE_TAB].hwnd;
@@ -1018,13 +1017,13 @@ void SetStyleInfo(HWND hwnd)
 
 	// Display the window style in static label
 	dwStyle = GetWindowLong(hwnd, GWL_STYLE);
-	wsprintf(ach, szHexFmt, dwStyle);
-	SetDlgItemText(hwndDlg, IDC_STYLE, ach);
+	wsprintfW(ach, szHexFmt, dwStyle);
+	SetDlgItemTextW(hwndDlg, IDC_STYLE, ach);
 
 	// Display the extended window style in static label
 	dwStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
-	wsprintf(ach, szHexFmt, dwStyle);
-	SetDlgItemText(hwndDlg, IDC_STYLEEX, ach);
+	wsprintfW(ach, szHexFmt, dwStyle);
+	SetDlgItemTextW(hwndDlg, IDC_STYLEEX, ach);
 
 	// Find handles to standard and extended style lists
 	hwndStyle   = GetDlgItem(hwndDlg, IDC_LIST1);

@@ -27,7 +27,7 @@ static LRESULT CALLBACK NoFlickerTabProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
 
 	//int bx, by;
 
-	WNDPROC OldTabProc = (WNDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+	WNDPROC OldTabProc = (WNDPROC)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
 
 	switch(msg)
 	{
@@ -44,7 +44,7 @@ static LRESULT CALLBACK NoFlickerTabProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
 		width = rect.right;
 
 		//find work area of tab control
-		TabCtrl_AdjustRect(hwnd, FALSE, (LPARAM)&rect);
+		SendMessageW(hwnd, TCM_ADJUSTRECT, 0, (LPARAM)&rect);
 
 		//bx = GetSystemMetrics(SM_CXEDGE);
 		//by = GetSystemMetrics(SM_CYEDGE);
@@ -58,8 +58,8 @@ static LRESULT CALLBACK NoFlickerTabProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
 		FrameRect(hdc, &rect, GetSysColorBrush(COLOR_BTNFACE));
 
 		// Get coords of last TAB.
-		n = TabCtrl_GetItemCount(hwnd);
-		TabCtrl_GetItemRect(hwnd, n - 1, &rect);
+		n = SendMessageW(hwnd, TCM_GETITEMCOUNT, 0, 0);
+		SendMessageW(hwnd, TCM_GETITEMRECT, n - 1, (LPARAM)&rect);
 
 		// Now fill the long horz rectangle to the right of the tab..
 		rect.left  = rect.right + 2;
@@ -71,16 +71,16 @@ static LRESULT CALLBACK NoFlickerTabProc(HWND hwnd, UINT msg, WPARAM wParam, LPA
 		return 1;
 	}
 
-	return CallWindowProc(OldTabProc, hwnd, msg, wParam, lParam);
+	return CallWindowProcW(OldTabProc, hwnd, msg, wParam, lParam);
 }
 
 BOOL RemoveTabCtrlFlicker(HWND hwndTab)
 {
 	//Subclass the tab control
-	WNDPROC oldproc = (WNDPROC)SetWindowLongPtr(hwndTab, GWLP_WNDPROC, (LONG_PTR)NoFlickerTabProc);
+	WNDPROC oldproc = (WNDPROC)SetWindowLongPtrW(hwndTab, GWLP_WNDPROC, (LONG_PTR)NoFlickerTabProc);
 
 	//Store the old window procedure
-	SetWindowLongPtr(hwndTab, GWLP_USERDATA, (LONG_PTR)oldproc);
+	SetWindowLongPtrW(hwndTab, GWLP_USERDATA, (LONG_PTR)oldproc);
 
 	return TRUE;
 }

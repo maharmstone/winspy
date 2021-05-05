@@ -19,13 +19,12 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 
 #include "InjectThread.h"
 
-typedef BOOL (WINAPI *PROCGETCLASSINFOEX) (HINSTANCE, LPTSTR, WNDCLASSEX*);
+typedef BOOL (WINAPI *PROCGETCLASSINFOEX) (HINSTANCE, LPWSTR, WNDCLASSEXW*);
 typedef LONG (WINAPI *PROCGETWINDOWLONG)  (HWND, int);
-typedef int  (WINAPI *PROCGETWINDOWTEXT)  (HWND, LPTSTR, int);
+typedef int  (WINAPI *PROCGETWINDOWTEXT)  (HWND, LPWSTR, int);
 typedef UINT (WINAPI *PROCSENDMESSAGETO)  (HWND, UINT, WPARAM, LPARAM, UINT, UINT, DWORD*);
 
 //
@@ -42,13 +41,13 @@ typedef struct
 	ATOM        atom;		//class atom of window
 	HINSTANCE   hInst;
 
-	TCHAR		szClassName[128];
+	WCHAR		szClassName[128];
 
-	WNDCLASSEX  wcOutput;
+	WNDCLASSEXW wcOutput;
 	WNDPROC     wndproc;
 
 	// Window text to retrieve
-	TCHAR       szText[200];	// text (out)
+	WCHAR       szText[200];	// text (out)
 	int         nTextSize;
 
 } INJDATA;
@@ -62,7 +61,7 @@ typedef struct
 //	Thread to inject to remote process. Must not
 //  make ANY calls to code in THIS process.
 //
-static DWORD WINAPI GetClassInfoExProc(LPVOID *pParam)
+static DWORD WINAPI GetClassInfoExProc(LPVOID pParam)
 {
 	INJDATA *pInjData = (INJDATA *)pParam;
 	BOOL    fRet = 0;
@@ -72,15 +71,15 @@ static DWORD WINAPI GetClassInfoExProc(LPVOID *pParam)
 		pInjData->wndproc = (WNDPROC)pInjData->fnGetWindowLong(pInjData->hwnd, GWLP_WNDPROC);
 
 	if(pInjData->fnGetClassInfoEx)
-		fRet = pInjData->fnGetClassInfoEx(pInjData->hInst, (LPTSTR)pInjData->szClassName, &pInjData->wcOutput);
+		fRet = pInjData->fnGetClassInfoEx(pInjData->hInst, (LPWSTR)pInjData->szClassName, &pInjData->wcOutput);
 
 	//if(pInjData->fnGetWindowText)
-	//	pInjData->fnGetWindowText(pInjData->hwnd, pInjData->szText, pInjData->nTextSize);
+	//	pInjData->fnGetWindowTextW(pInjData->hwnd, pInjData->szText, pInjData->nTextSize);
 
 	if(pInjData->fnSendMessageTimeout)
 	{
 		// Nul-terminate in case the gettext fails
-		pInjData->szText[0] = _T('\0');
+		pInjData->szText[0] = 0;
 
 		pInjData->fnSendMessageTimeout(pInjData->hwnd, WM_GETTEXT,
 				pInjData->nTextSize, (LPARAM)pInjData->szText,
@@ -95,10 +94,10 @@ static void AfterThreadProc(void) { }
 
 #pragma check_stack
 
-BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass, WNDPROC *pProc, TCHAR *pszText, int nTextLen)
+BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEXW *pClass, WNDPROC *pProc, WCHAR *pszText, int nTextLen)
 {
 	INJDATA InjData;
-	HMODULE hUser32 = GetModuleHandle(__TEXT("User32"));
+	HMODULE hUser32 = GetModuleHandleW(L"User32");
 	BOOL    fReturn;
 
 	DWORD   dwThreadId;
@@ -137,10 +136,10 @@ BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass, WNDPROC *pProc, TCHAR *p
 
 	// Setup the data the API calls will need
 	InjData.hwnd      = (HWND)hwnd;
-	InjData.atom      = (ATOM)GetClassLong(hwnd, GCW_ATOM);
-	InjData.hInst     = (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
+	InjData.atom      = (ATOM)GetClassLongW(hwnd, GCW_ATOM);
+	InjData.hInst     = (HINSTANCE)GetWindowLongPtrW(hwnd, GWLP_HINSTANCE);
 	InjData.wndproc   = 0;
-	InjData.nTextSize = sizeof(InjData.szText) / sizeof(TCHAR);
+	InjData.nTextSize = sizeof(InjData.szText) / sizeof(WCHAR);
 
 
 	// if we are injecting into THIS process, DO NOT RUN GETWINDOWTEXT!!!
@@ -173,7 +172,7 @@ BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass, WNDPROC *pProc, TCHAR *p
 		*pClass = InjData.wcOutput;
 		*pProc  = InjData.wndproc;
 
-		lstrcpyn(pszText, InjData.szText, 200);
+		lstrcpynW(pszText, InjData.szText, 200);
 		return TRUE;
 	}
 }

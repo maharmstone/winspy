@@ -15,7 +15,7 @@ int WINAPI GetRectHeight(RECT *);
 
 HBITMAP LoadPNGImage(UINT id, void **bits);
 
-#define WC_TRANSWINDOW	TEXT("TransWindow")
+#define WC_TRANSWINDOW	L"TransWindow"
 #define DOCKRECT_TYPE_TRANS  0
 #define DOCKRECT_TYPE_SHADED 1
 #define DOCKRECT_TYPE_THICK  2
@@ -160,7 +160,7 @@ void UpdatePanelTrans(HWND hwndPanel, RECT *rect)
 	hold = SelectObject(hdcMem, hbm);
 
 	//FillRect(hdcMem, &rect, GetSysColorBrush(COLOR_HIGHLIGHT));
-	//SetWindowLongPtr(hwndPanel, GWL_EXSTYLE, GetWindowLongPtr(hwndPanel, GWL_EXSTYLE) | WS_EX_LAYERED);
+	//SetWindowLongPtrW(hwndPanel, GWL_EXSTYLE, GetWindowLongPtrW(hwndPanel, GWL_EXSTYLE) | WS_EX_LAYERED);
 
 	UpdateLayeredWindow(hwndPanel,
 		hdcSrc,
@@ -190,18 +190,18 @@ LRESULT CALLBACK TransWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return HTTRANSPARENT;
 	}
 
-	return DefWindowProc(hwnd, msg, wParam, lParam);
+	return DefWindowProcW(hwnd, msg, wParam, lParam);
 }
 
 ATOM InitTrans()
 {
-	WNDCLASSEX wc = { sizeof(wc) };
+	WNDCLASSEXW wc = { sizeof(wc) };
 
 	wc.style		 = 0;
 	wc.lpszClassName = WC_TRANSWINDOW;
 	wc.lpfnWndProc   = TransWndProc;
 
-	return RegisterClassEx(&wc);
+	return RegisterClassExW(&wc);
 }
 
 
@@ -215,7 +215,7 @@ HWND ShowTransWindow(HWND hwnd)//, RECT *rect)
 
     InitTrans();
 
-    hwndTransPanel = CreateWindowEx(
+    hwndTransPanel = CreateWindowExW(
         WS_EX_TOOLWINDOW|WS_EX_LAYERED,
         WC_TRANSWINDOW,
         0,

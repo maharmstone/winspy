@@ -12,7 +12,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 #include <commctrl.h>
 
 #include "resource.h"
@@ -83,10 +82,10 @@ INT_PTR CALLBACK EditSizeDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPa
 		SetupEdits(hwnd, hwndTarget, &rect);
 
 		// Set up the spin controls
-		SendDlgItemMessage(hwnd, IDC_SPINX, UDM_SETRANGE, 0, MAKELONG(UD_MAXVAL , UD_MINVAL));
-		SendDlgItemMessage(hwnd, IDC_SPINY, UDM_SETRANGE, 0, MAKELONG(UD_MAXVAL , UD_MINVAL));
-		SendDlgItemMessage(hwnd, IDC_SPINW, UDM_SETRANGE, 0, MAKELONG(UD_MAXVAL , UD_MINVAL));
-		SendDlgItemMessage(hwnd, IDC_SPINH, UDM_SETRANGE, 0, MAKELONG(UD_MAXVAL , UD_MINVAL));
+		SendDlgItemMessageW(hwnd, IDC_SPINX, UDM_SETRANGE, 0, MAKELONG(UD_MAXVAL , UD_MINVAL));
+		SendDlgItemMessageW(hwnd, IDC_SPINY, UDM_SETRANGE, 0, MAKELONG(UD_MAXVAL , UD_MINVAL));
+		SendDlgItemMessageW(hwnd, IDC_SPINW, UDM_SETRANGE, 0, MAKELONG(UD_MAXVAL , UD_MINVAL));
+		SendDlgItemMessageW(hwnd, IDC_SPINH, UDM_SETRANGE, 0, MAKELONG(UD_MAXVAL , UD_MINVAL));
 
 		return TRUE;
 
@@ -146,9 +145,9 @@ void ShowEditSizeDlg(HWND hwndParent, HWND hwndTarget)
 {
 	if(IsWindow(spy_hCurWnd))
 	{
-		DialogBoxParam(
-			GetModuleHandle(0),
-			MAKEINTRESOURCE(IDD_ADJUSTWINPOS),
+		DialogBoxParamW(
+			GetModuleHandleW(0),
+			MAKEINTRESOURCEW(IDD_ADJUSTWINPOS),
 			hwndParent,
 			EditSizeDlgProc,
 			(LPARAM)hwndTarget);
@@ -157,8 +156,8 @@ void ShowEditSizeDlg(HWND hwndParent, HWND hwndTarget)
 	}
 	else
 	{
-		MessageBox(hwndParent,
-			_T("Not a valid window"),
+		MessageBoxW(hwndParent,
+			L"Not a valid window",
 			szAppName,
 			MB_OK | MB_ICONEXCLAMATION);
 	}

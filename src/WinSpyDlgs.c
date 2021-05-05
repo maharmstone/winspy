@@ -15,7 +15,6 @@
 
 #include <windows.h>
 #include <shellapi.h>
-#include <tchar.h>
 #include <commctrl.h>
 #include "resource.h"
 #include "WinSpy.h"
@@ -27,14 +26,14 @@ void  MakeHyperlink     (HWND hwnd, UINT staticid, COLORREF crLink);
 void  RemoveHyperlink	(HWND hwnd, UINT staticid);
 void  GetRemoteInfo		(HWND hwnd);
 
-TCHAR szWarning1[] = _T("Are you sure you want to close this process?");
-TCHAR szWarning2[] = _T("WARNING: Terminating a process can cause undesired\r\n")\
-					 _T("results including loss of data and system instability. The\r\n")\
-					 _T("process will not be given the chance to save its state or\r\n")\
-					 _T("data before it is terminated. Are you sure you want to\r\n")\
-					 _T("terminate the process?");
+WCHAR szWarning1[] = L"Are you sure you want to close this process?";
+WCHAR szWarning2[] = L"WARNING: Terminating a process can cause undesired\r\n"
+					L"results including loss of data and system instability. The\r\n"
+					L"process will not be given the chance to save its state or\r\n"
+					L"data before it is terminated. Are you sure you want to\r\n"
+					L"terminate the process?";
 
-extern TCHAR szPath[];
+extern WCHAR szPath[];
 
 //
 // save the tree-structure to clipboard?
@@ -48,10 +47,10 @@ extern TCHAR szPath[];
 	DWORD pid, tid;
 	HANDLE hThread;
 	DWORD exitcode = FALSE;
-	PVOID proc = GetProcAddress(GetModuleHandle(_T("user32.dll")), "DestroyWindow");
+	PVOID proc = GetProcAddress(GetModuleHandleW(L"user32.dll"), "DestroyWindow");
 	int (WINAPI * ZwAlertResumeThread)(HANDLE, DWORD*);
 
-	ZwAlertResumeThread = (PVOID)GetProcAddress(GetModuleHandle(_T("ntdll.dll")), "ZwAlertResumeThread");
+	ZwAlertResumeThread = (PVOID)GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "ZwAlertResumeThread");
 
 	tid = GetWindowThreadProcessId(hwnd, &pid);
 
@@ -132,7 +131,7 @@ UINT WinSpy_PopupCommandHandler(HWND hwndDlg, UINT uCmdId, HWND hwndTarget)
 
 	// Close window
 	case IDM_POPUP_CLOSE:
-		PostMessage(hwndTarget, WM_CLOSE, 0, 0);
+		PostMessageW(hwndTarget, WM_CLOSE, 0, 0);
 		return 0;
 
 	//case IDM_POPUP_DESTROY:
@@ -204,7 +203,7 @@ void WinSpy_SetupPopupMenu(HMENU hMenu, HWND hwndTarget)
 LRESULT CALLBACK GeneralDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND  hCtrl;
-	TCHAR szCaption[256];
+	WCHAR szCaption[256];
 	HWND  hwndEdit1, hwndEdit2;
 	HMENU hMenu, hPopup;
 	RECT  rect;
@@ -247,7 +246,7 @@ LRESULT CALLBACK GeneralDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			// Show our popup menu under this button
 			hCtrl = spy_hCurWnd;
 
-			hMenu = LoadMenu(hInst, MAKEINTRESOURCE(IDR_MENU2));
+			hMenu = LoadMenuW(hInst, MAKEINTRESOURCEW(IDR_MENU2));
 			hPopup = GetSubMenu(hMenu, 0);
 
 			GetWindowRect((HWND)lParam, &rect);
@@ -274,8 +273,8 @@ LRESULT CALLBACK GeneralDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			if(IsWindowVisible(hwndEdit1))
 			{
 				// Copy the contents of the edit box to the combo box
-				GetWindowText(hwndEdit1, szCaption, sizeof(szCaption) / sizeof(TCHAR));
-				SetWindowText(hwndEdit2, szCaption);
+				GetWindowTextW(hwndEdit1, szCaption, sizeof(szCaption) / sizeof(WCHAR));
+				SetWindowTextW(hwndEdit2, szCaption);
 
 				ShowWindow(hwndEdit2, SW_SHOW);
 				ShowWindow(hwndEdit1, SW_HIDE);
@@ -285,16 +284,16 @@ LRESULT CALLBACK GeneralDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			hCtrl = (HWND)spy_hCurWnd;
 
 			// get the original text and add it to the combo list
-			GetWindowText(hCtrl, szCaption, sizeof(szCaption) / sizeof(TCHAR));
+			GetWindowTextW(hCtrl, szCaption, sizeof(szCaption) / sizeof(WCHAR));
 
-			SendMessage(hwndEdit2, CB_ADDSTRING, 0, (LPARAM)szCaption);
+			SendMessageW(hwndEdit2, CB_ADDSTRING, 0, (LPARAM)szCaption);
 
 			// now see what the new caption is to be
-			GetWindowText(hwndEdit2, szCaption, sizeof(szCaption) / sizeof(TCHAR));
+			GetWindowTextW(hwndEdit2, szCaption, sizeof(szCaption) / sizeof(WCHAR));
 
 			// set the text to the new string
 			if(hCtrl != 0 && IsWindow(hCtrl))
-				SendMessage(hCtrl, WM_SETTEXT, 0, (LPARAM)szCaption);
+				SendMessageW(hCtrl, WM_SETTEXT, 0, (LPARAM)szCaption);
 
 			return TRUE;
 		}
@@ -372,11 +371,11 @@ LRESULT CALLBACK StyleDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam
 LRESULT CALLBACK WindowDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND      hwndList1, hwndList2;
-	LVCOLUMN  lvcol;
+	LVCOLUMNW lvcol;
 	RECT      rect;
 	int       width;
 	int       xs[] = { 64, 100, 140 };
-	TCHAR     ach[10];
+	WCHAR     ach[10];
 	NMITEMACTIVATE *nmatv;
 
 	switch(iMsg)
@@ -387,8 +386,8 @@ LRESULT CALLBACK WindowDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 		hwndList2 = GetDlgItem(hwnd, IDC_LIST2);
 
 		// Full row select for both ListViews
-		ListView_SetExtendedListViewStyle(hwndList1, LVS_EX_FULLROWSELECT);
-		ListView_SetExtendedListViewStyle(hwndList2, LVS_EX_FULLROWSELECT);
+		SendMessageW(hwndList1, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, LVS_EX_FULLROWSELECT);
+		SendMessageW(hwndList2, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, LVS_EX_FULLROWSELECT);
 
 		// See how much space we have for the header columns to
 		// fit exactly into the dialog
@@ -399,21 +398,21 @@ LRESULT CALLBACK WindowDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 		lvcol.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		lvcol.cx   = 64;
 		lvcol.iSubItem = 0;
-		lvcol.pszText = _T("Handle");
-		ListView_InsertColumn(hwndList1, 0, &lvcol);
-		ListView_InsertColumn(hwndList2, 0, &lvcol);
+		lvcol.pszText = L"Handle";
+		SendMessageW(hwndList1, LVM_INSERTCOLUMNW, 0, (LPARAM)&lvcol);
+		SendMessageW(hwndList2, LVM_INSERTCOLUMNW, 0, (LPARAM)&lvcol);
 		width -= lvcol.cx;
 
-		lvcol.pszText = _T("Class Name");
+		lvcol.pszText = L"Class Name";
 		lvcol.cx   = 100;
-		ListView_InsertColumn(hwndList1, 1, &lvcol);
-		ListView_InsertColumn(hwndList2, 1, &lvcol);
+		SendMessageW(hwndList1, LVM_INSERTCOLUMNW, 1, (LPARAM)&lvcol);
+		SendMessageW(hwndList2, LVM_INSERTCOLUMNW, 1, (LPARAM)&lvcol);
 		width -= lvcol.cx;
 
-		lvcol.pszText = _T("Window Text");
+		lvcol.pszText = L"Window Text";
 		lvcol.cx   = max(width, 64);
-		ListView_InsertColumn(hwndList1, 2, &lvcol);
-		ListView_InsertColumn(hwndList2, 2, &lvcol);
+		SendMessageW(hwndList1, LVM_INSERTCOLUMNW, 2, (LPARAM)&lvcol);
+		SendMessageW(hwndList2, LVM_INSERTCOLUMNW, 2, (LPARAM)&lvcol);
 
 		// Make hyperlinks from our two static controls
 		MakeHyperlink(hwnd, IDC_PARENT, RGB(0,0,255));
@@ -426,15 +425,22 @@ LRESULT CALLBACK WindowDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 
 		if(nmatv->hdr.code == NM_DBLCLK)
 		{
-			ListView_GetItemText(nmatv->hdr.hwndFrom, nmatv->iItem, 0, ach, sizeof(ach) / sizeof(TCHAR));
+			LVITEMW lvitem;
+
+			lvitem.iSubItem = 0;
+			lvitem.cchTextMax = sizeof(ach) / sizeof(WCHAR);
+			lvitem.pszText = ach;
+
+			SendMessageW(nmatv->hdr.hwndFrom, LVM_GETITEMTEXTW, nmatv->iItem, (LPARAM)&lvitem);
+
 			DisplayWindowInfo((HWND)_tstrtoib16(ach));
 		}
 
 		return FALSE;
 
 	case WM_SYSCOLORCHANGE:
-		ListView_SetBkColor(GetDlgItem(hwnd, IDC_LIST1), GetSysColor(COLOR_WINDOW));
-		ListView_SetBkColor(GetDlgItem(hwnd, IDC_LIST2), GetSysColor(COLOR_WINDOW));
+		SendMessageW(GetDlgItem(hwnd, IDC_LIST1), LVM_SETBKCOLOR, 0, GetSysColor(COLOR_WINDOW));
+		SendMessageW(GetDlgItem(hwnd, IDC_LIST2), LVM_SETBKCOLOR, 0, GetSysColor(COLOR_WINDOW));
 		return 0;
 
 	// if clicked on one of the underlined static controls, then
@@ -444,7 +450,7 @@ LRESULT CALLBACK WindowDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 		switch(LOWORD(wParam))
 		{
 		case IDC_PARENT: case IDC_OWNER:
-			GetDlgItemText(hwnd, LOWORD(wParam), ach, sizeof(ach)/sizeof(TCHAR));
+			GetDlgItemTextW(hwnd, LOWORD(wParam), ach, sizeof(ach)/sizeof(WCHAR));
 			DisplayWindowInfo((HWND)_tstrtoib16(ach));
 			return TRUE;
 		}
@@ -460,7 +466,7 @@ LRESULT CALLBACK WindowDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 LRESULT CALLBACK PropertyDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND      hwndList1;
-	LVCOLUMN  lvcol;
+	LVCOLUMNW lvcol;
 	RECT      rect;
 	int       width;
 
@@ -470,7 +476,7 @@ LRESULT CALLBACK PropertyDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPa
 
 		// Full-row selection for the ListView
 		hwndList1 = GetDlgItem(hwnd, IDC_LIST1);
-		ListView_SetExtendedListViewStyle(hwndList1, LVS_EX_FULLROWSELECT);
+		SendMessageW(hwndList1, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, LVS_EX_FULLROWSELECT);
 
 		// Work out how big the header-items need to be
 		GetClientRect(hwndList1, &rect);
@@ -481,21 +487,21 @@ LRESULT CALLBACK PropertyDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPa
 		lvcol.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		lvcol.cx   = 100;
 		lvcol.iSubItem = 0;
-		lvcol.pszText = _T("Handle");
-		ListView_InsertColumn(hwndList1, 0, &lvcol);
+		lvcol.pszText = L"Handle";
+		SendMessageW(hwndList1, LVM_INSERTCOLUMNW, 0, (LPARAM)&lvcol);
 		width -= lvcol.cx;
 
 		// Insert "Property" header-item
-		lvcol.pszText = _T("Property Name");
+		lvcol.pszText = L"Property Name";
 		lvcol.cx   = width;
-		ListView_InsertColumn(hwndList1, 1, &lvcol);
+		SendMessageW(hwndList1, LVM_INSERTCOLUMNW, 1, (LPARAM)&lvcol);
 
 		return TRUE;
 
 	case WM_SYSCOLORCHANGE:
 
 		// Need to react to system colour changes
-		ListView_SetBkColor(GetDlgItem(hwnd, IDC_LIST1), GetSysColor(COLOR_WINDOW));
+		SendMessageW(GetDlgItem(hwnd, IDC_LIST1), LVM_SETBKCOLOR, 0, GetSysColor(COLOR_WINDOW));
 		return 0;
 	}
 
@@ -552,7 +558,7 @@ LRESULT CALLBACK ProcessDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			// Load the menu
 			dwThreadId = GetWindowThreadProcessId(spy_hCurWnd, &dwProcessId);
 
-			hMenu = LoadMenu(hInst, MAKEINTRESOURCE(IDR_MENU1));
+			hMenu = LoadMenuW(hInst, MAKEINTRESOURCEW(IDR_MENU1));
 			hPopup = GetSubMenu(hMenu, 0);
 
 			GetWindowRect((HWND)lParam, &rect);
@@ -568,13 +574,13 @@ LRESULT CALLBACK ProcessDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			case IDM_WINSPY_FINDEXE:
 
 				{
-					TCHAR szExplorer[MAX_PATH];
-					TCHAR szPath[MAX_PATH];
+					WCHAR szExplorer[MAX_PATH];
+					WCHAR szPath[MAX_PATH];
 
-					GetDlgItemText(hwnd, IDC_PROCESSPATH, szPath, sizeof(szPath)/sizeof(TCHAR));
+					GetDlgItemTextW(hwnd, IDC_PROCESSPATH, szPath, sizeof(szPath)/sizeof(WCHAR));
 
-					wsprintf(szExplorer, _T("/select,\"%s\""), szPath);
-					ShellExecute(0, _T("open"), _T("explorer"), szExplorer, 0, SW_SHOW);
+					wsprintfW(szExplorer, L"/select,\"%s\"", szPath);
+					ShellExecuteW(0, L"open", L"explorer", szExplorer, 0, SW_SHOW);
 
 				}
 
@@ -583,7 +589,7 @@ LRESULT CALLBACK ProcessDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			// Forcibly terminate!
 			case IDM_WINSPY_TERMINATE:
 
-				if(MessageBox(hwnd, szWarning2, szAppName, MB_YESNO|MB_ICONWARNING) == IDYES)
+				if(MessageBoxW(hwnd, szWarning2, szAppName, MB_YESNO|MB_ICONWARNING) == IDYES)
 				{
 					HANDLE hProcess;
 
@@ -597,7 +603,7 @@ LRESULT CALLBACK ProcessDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 					}
 					else
 					{
-						MessageBox(hwnd, _T("Invalid Process Id"), szAppName, MB_OK|MB_ICONWARNING);
+						MessageBoxW(hwnd, L"Invalid Process Id", szAppName, MB_OK|MB_ICONWARNING);
 					}
 				}
 
@@ -606,9 +612,9 @@ LRESULT CALLBACK ProcessDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			// Cleanly exit. Won't work if app. is hung
 			case IDM_WINSPY_POSTQUIT:
 
-				if(MessageBox(hwnd, szWarning1, szAppName, MB_YESNO|MB_ICONWARNING) == IDYES)
+				if(MessageBoxW(hwnd, szWarning1, szAppName, MB_YESNO|MB_ICONWARNING) == IDYES)
 				{
-					PostThreadMessage(dwThreadId, WM_QUIT, 0, 0);
+					PostThreadMessageW(dwThreadId, WM_QUIT, 0, 0);
 				}
 
 				break;

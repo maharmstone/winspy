@@ -11,7 +11,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 
 #include "resource.h"
 #include "WinSpy.h"
@@ -23,33 +22,33 @@ HTREEITEM FindTreeItemByHwnd(HWND hwndTree, HWND hwndTarget, HTREEITEM hItem);
 
 void ShowHelp(HWND hwndMain, UINT uCommand, DWORD dwData)
 {
-	TCHAR szPath[MAX_PATH];
-	TCHAR *ptr;
+	WCHAR szPath[MAX_PATH];
+	WCHAR *ptr;
 
 	// Assume help file is in same directory as the
 	// main executable. So, just replace WinSpy.exe with WinSpy.hlp
 	// to find the name!
 
-	GetModuleFileName(0, szPath, MAX_PATH);
+	GetModuleFileNameW(0, szPath, MAX_PATH);
 
-	ptr = szPath + lstrlen(szPath) - 1;
+	ptr = szPath + lstrlenW(szPath) - 1;
 
-	while(ptr > szPath && *ptr != _T('\\'))
+	while(ptr > szPath && *ptr != L'\\')
 		ptr--;
 
-	lstrcpy(ptr, _T("\\WinSpy.hlp"));
+	lstrcpyW(ptr, L"\\WinSpy.hlp");
 
-	WinHelp(hwndMain, szPath, uCommand, dwData);
+	WinHelpW(hwndMain, szPath, uCommand, dwData);
 }
 
 void SetPinState(BOOL fPinned)
 {
 	fPinWindow = fPinned;
 
-	SendMessage(hwndPin, TB_CHANGEBITMAP, IDM_WINSPY_PIN,
+	SendMessageW(hwndPin, TB_CHANGEBITMAP, IDM_WINSPY_PIN,
 		MAKELPARAM(fPinWindow, 0));
 
-	SendMessage(hwndPin, TB_CHECKBUTTON, IDM_WINSPY_PIN,
+	SendMessageW(hwndPin, TB_CHECKBUTTON, IDM_WINSPY_PIN,
 			MAKELPARAM(fPinWindow, 0));
 
 }
@@ -57,7 +56,7 @@ void SetPinState(BOOL fPinned)
 UINT WinSpyDlg_CommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
 	HTREEITEM   hItem;
-	TVITEM      item;
+	TVITEMW     item;
 	NMHDR		hdr;
 	UINT        uLayout;
 
@@ -134,13 +133,13 @@ UINT WinSpyDlg_CommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 		fPinWindow = !fPinWindow;
 
-		SendMessage(hwndPin, TB_CHANGEBITMAP, IDM_WINSPY_PIN,
+		SendMessageW(hwndPin, TB_CHANGEBITMAP, IDM_WINSPY_PIN,
 			MAKELPARAM(fPinWindow, 0));
 
 		// if from an accelerator, then we have to manually check the
 		if(HIWORD(wParam) == 1)
 		{
-			SendMessage(hwndPin, TB_CHECKBUTTON, IDM_WINSPY_PIN,
+			SendMessageW(hwndPin, TB_CHECKBUTTON, IDM_WINSPY_PIN,
 				MAKELPARAM(fPinWindow, 0));
 		}
 
@@ -167,9 +166,9 @@ UINT WinSpyDlg_CommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 		hdr.idFrom   = IDC_TAB1;
 		hdr.code     = TCN_SELCHANGE;
 
-		TabCtrl_SetCurSel(hdr.hwndFrom, LOWORD(wParam) - IDM_WINSPY_GENERAL);
+		SendMessageW(hdr.hwndFrom, TCM_SETCURSEL, LOWORD(wParam) - IDM_WINSPY_GENERAL, 0);
 
-		SendMessage(hwnd, WM_NOTIFY, 0, (LPARAM)&hdr);
+		SendMessageW(hwnd, WM_NOTIFY, 0, (LPARAM)&hdr);
 
 		return TRUE;
 
@@ -177,12 +176,12 @@ UINT WinSpyDlg_CommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 		hwndTree = GetDlgItem(hwnd, IDC_TREE1);
 
-		hItem = TreeView_GetSelection(hwndTree);
+		hItem = (HTREEITEM)SendMessageW(hwnd, TVM_GETNEXTITEM, TVGN_CARET, 0);
 
 		item.mask  = TVIF_PARAM | TVIF_HANDLE;
 		item.hItem = hItem;
 
-		TreeView_GetItem(hwndTree, &item);
+		SendMessageW(hwndTree, TVM_GETITEMW, 0, (LPARAM)&item);
 
 		FlashWindowBorder((HWND)item.lParam, TRUE);
 
@@ -205,7 +204,7 @@ UINT WinSpyDlg_CommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 	case IDC_CAPTURE:
 		CaptureWindow(hwnd, spy_hCurWnd);
-		MessageBox(hwnd, _T("Window contents captured to clipboard"), szAppName, MB_ICONINFORMATION);
+		MessageBoxW(hwnd, L"Window contents captured to clipboard", szAppName, MB_ICONINFORMATION);
 		return TRUE;
 
 	case IDOK:
@@ -228,7 +227,7 @@ UINT WinSpyDlg_CommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 		else if(hwndFocus == GetDlgItem(hwndGeneral, IDC_CAPTION1) ||
 			hwndFocus == GetWindow(GetDlgItem(hwndGeneral, IDC_CAPTION2), GW_CHILD))
 		{
-			PostMessage(hwndGeneral, WM_COMMAND, MAKEWPARAM(IDC_SETCAPTION, BN_CLICKED), 0);
+			PostMessageW(hwndGeneral, WM_COMMAND, MAKEWPARAM(IDC_SETCAPTION, BN_CLICKED), 0);
 			return FALSE;
 		}
 
@@ -248,8 +247,8 @@ UINT WinSpyDlg_CommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 		hItem = FindTreeItemByHwnd(hwndTree, spy_hCurWnd, NULL);
 
 		// Move it into view!
-		SendMessage(hwndTree, TVM_ENSUREVISIBLE, 0, (LPARAM)hItem);
-		SendMessage(hwndTree, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
+		SendMessageW(hwndTree, TVM_ENSUREVISIBLE, 0, (LPARAM)hItem);
+		SendMessageW(hwndTree, TVM_SELECTITEM, TVGN_CARET, (LPARAM)hItem);
 		SetFocus(hwndTree);
 
 		return TRUE;
@@ -264,10 +263,10 @@ UINT WinSpyDlg_CommandHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 UINT WinSpyDlg_SysMenuHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-	TCHAR szText[200];
-	TCHAR szTitle[60];
-	TCHAR szVersion[40];
-	TCHAR szCurExe[MAX_PATH];
+	WCHAR szText[200];
+	WCHAR szTitle[60];
+	WCHAR szVersion[40];
+	WCHAR szCurExe[MAX_PATH];
 
 	switch(wParam & 0xFFF0)
 	{
@@ -296,13 +295,13 @@ UINT WinSpyDlg_SysMenuHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 	case IDM_WINSPY_ABOUT:
 
-		GetModuleFileName(0, szCurExe, MAX_PATH);
-		GetVersionString(szCurExe, TEXT("FileVersion"), szVersion, 40);
+		GetModuleFileNameW(0, szCurExe, MAX_PATH);
+		GetVersionString(szCurExe, L"FileVersion", szVersion, 40);
 
-		wsprintf(szText, _T("%s v%s\n\r\n\rCopyright(c) 2002-2012 by Catch22 Productions.\n\rWritten by J Brown.\n\r\n\rHomepage at www.catch22.net"), szAppName, szVersion);
-		wsprintf(szTitle, _T("About %s"), szAppName);
+        wsprintfW(szText, L"%s v%s\n\r\n\rCopyright(c) 2002-2012 by Catch22 Productions.\n\rWritten by J Brown.\n\r\n\rHomepage at www.catch22.net", szAppName, szVersion);
+		wsprintfW(szTitle, L"About %s", szAppName);
 
-		MessageBox(hwnd, szText, szTitle, MB_OK|MB_ICONINFORMATION);
+		MessageBoxW(hwnd, szText, szTitle, MB_OK|MB_ICONINFORMATION);
 		return TRUE;
 
 	case IDM_WINSPY_OPTIONS:
@@ -311,7 +310,7 @@ UINT WinSpyDlg_SysMenuHandler(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 	case IDM_WINSPY_ONTOP:
 
-		PostMessage(hwnd, WM_COMMAND, wParam, lParam);
+		PostMessageW(hwnd, WM_COMMAND, wParam, lParam);
 		return TRUE;
 
 	}

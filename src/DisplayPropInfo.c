@@ -13,7 +13,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include <tchar.h>
 
 #include "resource.h"
 #include "WinSpy.h"
@@ -21,13 +20,13 @@
 //
 //	Called once for each window property
 //
-BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPTSTR lpszString, HANDLE hData, ULONG_PTR dwUser)
+BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPWSTR lpszString, HANDLE hData, ULONG_PTR dwUser)
 {
 	HWND   hwndList = (HWND)dwUser;
-	TCHAR  ach[256];
-	LVITEM lvitem;
+	WCHAR  ach[256];
+	LVITEMW lvitem;
 
-	wsprintf(ach, szHexFmt, hData);
+	wsprintfW(ach, szHexFmt, hData);
 
 	lvitem.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM | LVIF_STATE;
 	lvitem.iSubItem = 0;
@@ -37,18 +36,23 @@ BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPTSTR lpszString, HANDLE hData, ULONG_P
 	lvitem.stateMask = 0;
 	lvitem.iImage = 0;
 
-	ListView_InsertItem(hwndList, &lvitem);
+	SendMessageW(hwndList, LVM_INSERTITEMW, 0, (LPARAM)&lvitem);
+
+	lvitem.iSubItem = 1;
 
 	// check that lpszString is a valid string, and not an ATOM in disguise
 	if(((DWORD)lpszString & 0xffff0000) == 0)
 	{
-		wsprintf(ach, _T("%08X (Atom)"), lpszString);
-		ListView_SetItemText(hwndList, 0, 1, ach);
+		wsprintfW(ach, L"%08X (Atom)", lpszString);
+
+        lvitem.pszText = ach;
 	}
 	else
 	{
-		ListView_SetItemText(hwndList, 0, 1, lpszString);
+        lvitem.pszText = lpszString;
 	}
+
+	SendMessageW(hwndList, LVM_SETITEMTEXTW, 0, (LPARAM)&lvitem);
 
 	return TRUE;
 }
@@ -58,8 +62,8 @@ BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPTSTR lpszString, HANDLE hData, ULONG_P
 //
 void EnumWindowProps(HWND hwnd, HWND hwndList)
 {
-	ListView_DeleteAllItems(hwndList);
-	EnumPropsEx(hwnd, PropEnumProcEx, (ULONG_PTR)hwndList);
+	SendMessageW(hwndList, LVM_DELETEALLITEMS, 0, 0);
+	EnumPropsExW(hwnd, PropEnumProcEx, (ULONG_PTR)hwndList);
 }
 
 void SetPropertyInfo(HWND hwnd)

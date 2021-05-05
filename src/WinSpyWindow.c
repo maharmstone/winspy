@@ -11,7 +11,6 @@
 #define STRICT
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <tchar.h>
 
 #include "resource.h"
 #include "WinSpy.h"
@@ -67,7 +66,7 @@ void GetWorkArea(RECT *prcWinRect, RECT *prcWorkArea)
 	HMODULE		hUser32;
 	MONITORINFO mi;
 
-	hUser32 = GetModuleHandle(_T("USER32.DLL"));
+	hUser32 = GetModuleHandleW(L"USER32.DLL");
 
 	// if we havn't already tried,
 	if(fFindMultiMon == TRUE)
@@ -93,7 +92,7 @@ void GetWorkArea(RECT *prcWinRect, RECT *prcWorkArea)
 	}
 	else
 	{
-		SystemParametersInfo(SPI_GETWORKAREA, 0, prcWorkArea, FALSE);
+		SystemParametersInfoW(SPI_GETWORKAREA, 0, prcWorkArea, FALSE);
 	}
 }
 
@@ -104,7 +103,7 @@ void ForceVisibleDisplay(HWND hwnd)
 
 	GetWindowRect(hwnd, &rect);
 
-	hUser32 = GetModuleHandle(_T("USER32.DLL"));
+	hUser32 = GetModuleHandleW(L"USER32.DLL");
 
 	pMonitorFromRect = (MFR_PROC)GetProcAddress(hUser32, "MonitorFromRect");
 
@@ -130,7 +129,7 @@ void GetPinnedPosition(HWND hwnd, POINT *pt)
 	GetWindowRect(hwnd, &rect);
 
 	// get
-//	SystemParametersInfo(SPI_GETWORKAREA, 0, &rcDisplay, FALSE);
+//	SystemParametersInfoW(SPI_GETWORKAREA, 0, &rcDisplay, FALSE);
 	GetWorkArea(&rect, &rcDisplay);
 
 	uPinnedCorner = PINNED_NONE;
@@ -318,7 +317,7 @@ void WinSpyDlg_SizeContents(HWND hwnd)
 	nPaneHeight = rect.bottom - rect.top;
 
 	// Resize the tab control based on this biggest rect
-	SendMessage(hwndTab, TCM_ADJUSTRECT, TRUE, (LPARAM)&rect);
+	SendMessageW(hwndTab, TCM_ADJUSTRECT, TRUE, (LPARAM)&rect);
 
 	nTabWidth  = rect.right-rect.left;
 	nTabHeight = rect.bottom-rect.top;
@@ -336,7 +335,7 @@ void WinSpyDlg_SizeContents(HWND hwnd)
 	ScreenToClient(hwnd, (POINT *)&rect.left);
 	ScreenToClient(hwnd, (POINT *)&rect.right);
 
-	SendMessage(hwndTab, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
+	SendMessageW(hwndTab, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
 
 	x = rect.left;
 	y = rect.top;
@@ -510,7 +509,7 @@ UINT WinSpyDlg_Size(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	rect.top++;
 
 	// Work out the coords of the tab contents
-	SendMessage(hwndCtrl, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
+	SendMessageW(hwndCtrl, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
 
 	// Resize the tree control so that it fills the tab control.
 	hwndCtrl = GetDlgItem(hwnd, IDC_TREE1);
@@ -669,23 +668,23 @@ UINT WinSpyDlg_WindowPosChanged(HWND hwnd, WINDOWPOS *wp)
 
 			if(layout == WINSPY_NORMAL)
 			{
-				hIcon = LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON16), IMAGE_ICON, 16, 16, 0);
-				hOld = (HICON)SendDlgItemMessage(hwnd, IDC_EXPAND, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+				hIcon = LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON16), IMAGE_ICON, 16, 16, 0);
+				hOld = (HICON)SendDlgItemMessageW(hwnd, IDC_EXPAND, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
 
 				DestroyIcon(hOld);
 
-				SetWindowLong(hwndExpand, GWL_STYLE, dwStyle | BS_RIGHT);
-				SetWindowText(hwndExpand, _T("&More"));
+				SetWindowLongW(hwndExpand, GWL_STYLE, dwStyle | BS_RIGHT);
+				SetWindowTextW(hwndExpand, L"&More");
 			}
 			else
 			{
-				hIcon = LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON18), IMAGE_ICON, 16, 16, 0);
-				hOld = (HICON)SendDlgItemMessage(hwnd, IDC_EXPAND, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+				hIcon = LoadImageW(hInst, MAKEINTRESOURCEW(IDI_ICON18), IMAGE_ICON, 16, 16, 0);
+				hOld = (HICON)SendDlgItemMessageW(hwnd, IDC_EXPAND, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
 
 				DestroyIcon(hOld);
 
-				SetWindowLong(hwndExpand, GWL_STYLE, dwStyle & ~BS_RIGHT);
-				SetWindowText(hwndExpand, _T("L&ess"));
+				SetWindowLongW(hwndExpand, GWL_STYLE, dwStyle & ~BS_RIGHT);
+				SetWindowTextW(hwndExpand, L"L&ess");
 			}
 
 			SetSysMenuIconFromLayout(hwnd, layout);
@@ -877,13 +876,13 @@ UINT WinSpyDlg_ExitSizeMove(HWND hwnd)
 
 UINT_PTR WinSpyDlg_FullWindowDrag(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-	uHitTest = DefWindowProc(hwnd, WM_NCHITTEST, wParam, lParam);
+	uHitTest = DefWindowProcW(hwnd, WM_NCHITTEST, wParam, lParam);
 
 	// Allow full-window dragging
 	if(fFullDragging &&	uHitTest == HTCLIENT)
 		uHitTest = HTCAPTION;
 
-	SetWindowLongPtr(hwnd, DWLP_MSGRESULT, uHitTest);
+	SetWindowLongPtrW(hwnd, DWLP_MSGRESULT, uHitTest);
 	return uHitTest;
 }
 
@@ -895,7 +894,7 @@ BOOL WinSpy_ZoomTo(HWND hwnd, UINT uCorner)
 	RECT rcDisplay;
 	RECT rect;
 
-	//SystemParametersInfo(SPI_GETWORKAREA, 0, &rcDisplay, FALSE);
+	//SystemParametersInfoW(SPI_GETWORKAREA, 0, &rcDisplay, FALSE);
 	GetWindowRect(hwnd, &rect);
 	GetWorkArea(&rect, &rcDisplay);
 

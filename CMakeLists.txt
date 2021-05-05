@@ -39,3 +39,5 @@ add_executable(winspy ${SRC_FILES})
 target_include_directories(winspy PUBLIC src/resource)
 
 target_link_libraries(winspy uxtheme version comctl32 windowscodecs)
+
+target_compile_options(winspy PUBLIC -Werror=incompatible-pointer-types -Werror=implicit-function-declaration)
