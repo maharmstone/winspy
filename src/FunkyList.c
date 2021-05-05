@@ -1,7 +1,7 @@
 //
 //	WinSpy Finder Tool.
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	Nice-looking owner-drawn list (used for style-lists).
@@ -33,7 +33,7 @@ BOOL FunkyList_MeasureItem(HWND hwnd, UINT uCtrlId, MEASUREITEMSTRUCT *mis)
 //  If this style is zero, this means that it is an implicit style, so
 //  draw the whole line gray.
 //
-//  Also, at the end of every line, right-align the hex-values of each style  
+//  Also, at the end of every line, right-align the hex-values of each style
 //
 BOOL FunkyList_DrawItem(HWND hwnd, UINT uCtrlId, DRAWITEMSTRUCT *dis)
 {
@@ -56,7 +56,7 @@ BOOL FunkyList_DrawItem(HWND hwnd, UINT uCtrlId, DRAWITEMSTRUCT *dis)
 		// get the text string to display, and the item state.
 		SendMessage(hwndList, LB_GETTEXT, dis->itemID, (LONG)szText);
 		dwStyle = (DWORD)dis->itemData;
-	
+
 		if((dis->itemState & ODS_SELECTED))
 		{
 			SetTextColor(dis->hDC, GetSysColor(COLOR_HIGHLIGHTTEXT));
@@ -69,16 +69,16 @@ BOOL FunkyList_DrawItem(HWND hwnd, UINT uCtrlId, DRAWITEMSTRUCT *dis)
 				SetTextColor(dis->hDC, GetSysColor(COLOR_3DSHADOW));
 			else
 				SetTextColor(dis->hDC, GetSysColor(COLOR_WINDOWTEXT));
-			
+
 			SetBkColor(dis->hDC, GetSysColor(COLOR_WINDOW));
 		}
 
 		//draw the item text first of all. The ExtTextOut function also
 		//lets us draw a rectangle under the text, so we use this facility
 		//to draw the whole line at once.
-		ExtTextOut(dis->hDC, 
-			dis->rcItem.left + 2, 
-			dis->rcItem.top + 0, 
+		ExtTextOut(dis->hDC,
+			dis->rcItem.left + 2,
+			dis->rcItem.top + 0,
 			ETO_OPAQUE, &dis->rcItem, szText, lstrlen(szText), 0);
 
 		//Draw the style bytes

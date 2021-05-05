@@ -1,6 +1,6 @@
 //
 //	CaptureWindow.c
-//  Copyright (c) 2002 by J Brown. 
+//  Copyright (c) 2002 by J Brown.
 //  Portions Copyright (c) Microsoft Corporation. (from MSDN)
 //	Freeware
 //
@@ -53,7 +53,7 @@ static HPALETTE GetSystemPalette(HDC hdc)
    int nColors;					// number of colors
 
    // Find out how many palette entries we want.
-   nColors = PalEntriesOnDevice(hdc);   
+   nColors = PalEntriesOnDevice(hdc);
 
    // Allocate room for the palette and lock it.
    hLogPal = GlobalAlloc(GHND, sizeof(LOGPALETTE) + nColors * sizeof(PALETTEENTRY));
@@ -84,16 +84,16 @@ static HPALETTE GetSystemPalette(HDC hdc)
 static WORD FAR DIBNumColors(LPSTR lpDIB)
 {
 	WORD wBitCount;  // DIB bit count
-	
+
 	if(IS_WIN30_DIB(lpDIB))
 	{
 		DWORD dwClrUsed;
-		
+
 		dwClrUsed = ((LPBITMAPINFOHEADER)lpDIB)->biClrUsed;
 		if (dwClrUsed)
 			return (WORD)dwClrUsed;
 	}
-	
+
 	//  Calculate the number of colors in the color table based on
     // the number of bits per pixel for the DIB.
     //
@@ -101,7 +101,7 @@ static WORD FAR DIBNumColors(LPSTR lpDIB)
 		wBitCount = ((LPBITMAPINFOHEADER)lpDIB)->biBitCount;
 	else
 		wBitCount = ((LPBITMAPCOREHEADER)lpDIB)->bcBitCount;
-	
+
 	// return number of colors based on bits per pixel
 	switch (wBitCount)
 	{
@@ -266,7 +266,7 @@ BOOL CaptureWindow(HWND hwndOwner, HWND hwnd)
 	HDC hdc, hdcMem, hdcOld;
 	HBITMAP hBmp;
 	HANDLE hDIB;
-	
+
 	HPALETTE hPal;
 
 	int width, height;
@@ -296,7 +296,7 @@ BOOL CaptureWindow(HWND hwndOwner, HWND hwnd)
 	//palette detection
 	RasterCapsScrn  = GetDeviceCaps(hdc, RASTERCAPS);
 	PaletteSizeScrn = GetDeviceCaps(hdc, SIZEPALETTE);
-  
+
 	if((RasterCapsScrn & RC_PALETTE) && (PaletteSizeScrn = 256))
 		hPal = GetSystemPalette(hdc);
 	else
@@ -310,7 +310,7 @@ BOOL CaptureWindow(HWND hwndOwner, HWND hwnd)
 
 
 	CloseClipboard();
-	
+
 	ReleaseDC(0, hdc);
 
 	return TRUE;

@@ -1,7 +1,7 @@
 //
 //	Edit Size Dialog.
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	Just a simple dialog which allows you to edit a
@@ -56,7 +56,7 @@ void SetTargetPos(HWND hwndDlg, HWND hwndTarget)
 	rect.top    = GetDlgItemInt(hwndDlg, IDC_EDITY, 0, TRUE);
 	rect.right  = GetDlgItemInt(hwndDlg, IDC_EDITW, 0, TRUE);
 	rect.bottom = GetDlgItemInt(hwndDlg, IDC_EDITH, 0, TRUE);
-	
+
 	SetWindowPos(hwndTarget, 0, rect.left, rect.top, rect.right, rect.bottom,
 		SWP_NOACTIVATE | SWP_NOZORDER);
 }
@@ -66,7 +66,7 @@ void SetTargetPos(HWND hwndDlg, HWND hwndTarget)
 //
 INT_PTR CALLBACK EditSizeDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
-	RECT  rect;	
+	RECT  rect;
 
 	static HWND hwndTarget;	// target window!
 	static RECT rect0;		// original coords
@@ -108,7 +108,7 @@ INT_PTR CALLBACK EditSizeDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPa
 		switch(LOWORD(wParam))
 		{
 		case IDC_RESET:
-	
+
 			// go back to the original coords
 			SetupEdits(hwnd, hwndTarget, &rect0);
 			SetTargetPos(hwnd, hwndTarget);
@@ -120,7 +120,7 @@ INT_PTR CALLBACK EditSizeDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPa
 			return TRUE;
 
 		case IDC_ADJUST:
-			
+
 			SetTargetPos(hwnd, hwndTarget);
 
 			// Get the window's coords again to see what happened
@@ -147,19 +147,19 @@ void ShowEditSizeDlg(HWND hwndParent, HWND hwndTarget)
 	if(IsWindow(spy_hCurWnd))
 	{
 		DialogBoxParam(
-			GetModuleHandle(0), 
-			MAKEINTRESOURCE(IDD_ADJUSTWINPOS), 
-			hwndParent, 
-			EditSizeDlgProc, 
+			GetModuleHandle(0),
+			MAKEINTRESOURCE(IDD_ADJUSTWINPOS),
+			hwndParent,
+			EditSizeDlgProc,
 			(LPARAM)hwndTarget);
 
 		SetGeneralInfo(hwndTarget);
 	}
 	else
 	{
-		MessageBox(hwndParent, 
-			_T("Not a valid window"), 
-			szAppName, 
+		MessageBox(hwndParent,
+			_T("Not a valid window"),
+			szAppName,
 			MB_OK | MB_ICONEXCLAMATION);
 	}
 }

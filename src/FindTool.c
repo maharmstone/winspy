@@ -1,7 +1,7 @@
 //
 //	WinSpy Finder Tool.
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	This is a standalone file which implements
@@ -17,27 +17,27 @@
 //
 //     wfn   - Event callback function. Must not be zero.
 //
-//     Return values: 
+//     Return values:
 //             TRUE for success, FALSE for failure
 //
 //
 //  2. UINT CALLBACK WndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
 //
-//     This is a callback function that you supply when using 
+//     This is a callback function that you supply when using
 //     MakeFinderTool. This callback can be executed for a number
 //     different events - described by uCode.
 //
 //     hwndTool - handle to the finder tool
 //
 //     hwnd  - handle to the window which has been found.
-//    
+//
 //     uCode - describes the event. Can be one of the following values.
-//           
+//
 //             WFN_BEGIN        : tool is about to become active.
 //             WFN_SELCHANGING  : sent when tool moves from window-window.
 //             WFN_SELCHANGED   : sent when final window is selected.
 //             WFN_CANCELLED    : Tool cancelled. hwnd is not valid (0)
-//      
+//
 //     Return values:
 //             Return value is only checked for WFN_BEGIN. Return 0 (zero)
 //             to continue, -1 to prevent tool from being used. Otherwise,
@@ -97,13 +97,13 @@ void InvertWindow(HWND hwnd, BOOL fShowHidden)
 	int x1,y1;
 
 	int border = INVERT_BORDER;
-	
+
 	if(hwnd == 0)
 		return;
 
 	//window rectangle (screen coords)
 	GetWindowRect(hwnd, &rect);
-	
+
 	//client rectangle (screen coords)
 	GetClientRect(hwnd, &rectc);
 	ClientToScreen(hwnd, (POINT *)&rectc.left);
@@ -114,7 +114,7 @@ void InvertWindow(HWND hwnd, BOOL fShowHidden)
 	y1 = rect.top;
 	OffsetRect(&rect, -x1, -y1);
 	OffsetRect(&rectc, -x1, -y1);
-				
+
 	if(rect.bottom - border * 2 < 0)
 		border = 1;
 
@@ -125,7 +125,7 @@ void InvertWindow(HWND hwnd, BOOL fShowHidden)
 		hwnd = 0;
 
 	hdc = GetWindowDC(hwnd);
-	
+
 	if(hdc == 0)
 		return;
 
@@ -134,7 +134,7 @@ void InvertWindow(HWND hwnd, BOOL fShowHidden)
 	SetRect(&rect2, 0,0,rect.right, border);
 	if(fShowHidden == TRUE) OffsetRect(&rect2, x1, y1);
 	InvertRect(hdc, &rect2);
-	
+
 	//left edge
 	//border = rectc.left-rect.left;
 	SetRect(&rect2, 0,border,border, rect.bottom);
@@ -146,7 +146,7 @@ void InvertWindow(HWND hwnd, BOOL fShowHidden)
 	SetRect(&rect2, border,rect.bottom-border,rect.right, rect.bottom);
 	if(fShowHidden == TRUE) OffsetRect(&rect2, x1, y1);
 	InvertRect(hdc, &rect2);
-	
+
 	//bottom edge
 	//border = rect.bottom-rectc.bottom;
 	SetRect(&rect2, rect.right-border, border,rect.right, rect.bottom-border);
@@ -204,7 +204,7 @@ LRESULT EndFindToolDrag(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	HWND hwndParent;
 
 	hwndParent = GetParent(hwnd);
-	
+
 	//InvertWindow(hwndCurrent, fShowHidden);
 	HideSel(hwndCurrent);
 	ReleaseCapture();
@@ -212,11 +212,11 @@ LRESULT EndFindToolDrag(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 	// Remove keyboard hook. This is done even if the user presses ESC
 	UnhookWindowsHookEx(draghook);
-	
+
 
 	fDragging = FALSE;
 	SendMessage(hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapDrag1);
-	
+
 	return 0;
 }
 
@@ -227,16 +227,16 @@ static LRESULT CALLBACK draghookproc(int code, WPARAM wParam, LPARAM lParam)
 	ULONG state = (ULONG)lParam;
 	static int count;
 
-	if(code < 0) 
+	if(code < 0)
 		return CallNextHookEx(draghook, code, wParam, lParam);
 
 	switch(wParam)
 	{
 	case VK_ESCAPE:
-	
+
 		if(!(state & 0x80000000))
 		{
-			//don't let the current window procedure process a VK_ESCAPE, 
+			//don't let the current window procedure process a VK_ESCAPE,
 			//because we want it to cancel the mouse capture
 			PostMessage(draghookhwnd, WM_CANCELMODE, 0, 0);
 			return -1;
@@ -245,7 +245,7 @@ static LRESULT CALLBACK draghookproc(int code, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case VK_SHIFT:
-		
+
 		if(state & 0x80000000)
 		{
 			//InvertWindow(hwndCurrent, fShowHidden);
@@ -289,7 +289,7 @@ static LRESULT CALLBACK draghookproc(int code, WPARAM wParam, LPARAM lParam)
 				ShowSel(hwndCurrent);
 			}
 		}
-		
+
 		return -1;
 	}
 
@@ -326,7 +326,7 @@ void ShowSel(HWND hwnd)
 		}
 	}
 	else
-	{			
+	{
 		InvertWindow(hwnd, fShowHidden);
 	}
 }
@@ -339,7 +339,7 @@ void HideSel(HWND hwnd)
 		hwndTransPanel = 0;
 	}
 	else
-	{			
+	{
 		InvertWindow(hwnd, fShowHidden);
 	}
 }
@@ -372,9 +372,9 @@ LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		hwndParent = GetParent(hwnd);
 		hwndCurrent = hwnd;
-		
+
 		ShowSel(hwndCurrent);
-		
+
 		SetCapture(hwnd);
 		hOldCursor = SetCursor(hCursor);
 
@@ -384,7 +384,7 @@ LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		// steal focus from current window when we use the drag tool,
 		// so a hook is a stealthier way to monitor key presses
 		draghookhwnd = hwnd;
-		draghook     = SetWindowsHookEx(WH_KEYBOARD, draghookproc, GetModuleHandle(0), 0); 
+		draghook     = SetWindowsHookEx(WH_KEYBOARD, draghookproc, GetModuleHandle(0), 0);
 
 		// Current window has changed
 		FireWndFindNotify(hwnd, WFN_SELCHANGED, hwndCurrent);
@@ -401,7 +401,7 @@ LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			//MoveFindTool(hwnd, wParam, lParam);
 
 			HWND hWndPoint;
-			
+
 			ptLast = pt;
 			ClientToScreen(hwnd, (POINT *)&pt);
 
@@ -439,7 +439,7 @@ LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	// Sent from the keyboard hook
 	case WM_CANCELMODE:
-		
+
 		// User has pressed ESCAPE, so cancel the find-tool
 		if(fDragging == TRUE)
 		{
@@ -470,7 +470,7 @@ LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 BOOL MakeFinderTool(HWND hwnd, WNDFINDPROC wfp)
 {
 	DWORD dwStyle;
-	
+
 	// If this is the first finder tool, then load
 	// the bitmap and mouse-cursor resources
 	if(InterlockedIncrement(&lRefCount) == 1)
@@ -480,7 +480,7 @@ BOOL MakeFinderTool(HWND hwnd, WNDFINDPROC wfp)
 
 	// Apply styles to make this a picture control
 	dwStyle = GetWindowLong(hwnd, GWL_STYLE);
-	
+
 	// Turn OFF styles we don't want
 	dwStyle &= ~(SS_RIGHT | SS_CENTER | SS_CENTERIMAGE);
 	dwStyle &= ~(SS_ICON | SS_SIMPLE | SS_LEFTNOWORDWRAP);
@@ -491,13 +491,13 @@ BOOL MakeFinderTool(HWND hwnd, WNDFINDPROC wfp)
 
 	// Now apply them..
 	SetWindowLong(hwnd, GWL_STYLE, dwStyle);
-	
+
 	// Set the default bitmap
 	SendMessage(hwnd, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmapDrag1);
 
 	// Set the callback for this control
 	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)wfp);
-	
+
 	// Subclass the static control
 	oldstaticproc = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)StaticProc);
 

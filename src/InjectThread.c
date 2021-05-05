@@ -1,7 +1,7 @@
 //
 //	InjectThread.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //  InjectThread uses the CreateRemoteThread API call
@@ -38,19 +38,19 @@ typedef PVOID (WINAPI * VF_EX_PROC)(HANDLE, LPVOID, SIZE_T, DWORD);
 DWORD InjectRemoteThread(HWND hwnd, LPTHREAD_START_ROUTINE lpCode, DWORD cbCodeSize, LPVOID lpData, DWORD cbDataSize)
 {
 	DWORD  dwProcessId;			//id of remote process
-	DWORD  dwThreadId;			//id of the thread in remote process 
+	DWORD  dwThreadId;			//id of the thread in remote process
 	HANDLE hProcess;			//handle to the remote process
-	
+
 	HANDLE hRemoteThread = 0;	//handle to the injected thread
 	DWORD  dwRemoteThreadId =0;	//ID of the injected thread
-	
+
 	SIZE_T dwWritten = 0;		// Number of bytes written to the remote process
 	SIZE_T dwRead = 0;
 	DWORD  dwExitCode;
-	
+
 	void *pRemoteData = 0;
-	
-	VA_EX_PROC pVirtualAllocEx; 
+
+	VA_EX_PROC pVirtualAllocEx;
 	VF_EX_PROC pVirtualFreeEx;
 
 	// The address to which code will be copied in the remote process
@@ -58,10 +58,10 @@ DWORD InjectRemoteThread(HWND hwnd, LPTHREAD_START_ROUTINE lpCode, DWORD cbCodeS
 
 	// Total size of all memory copied into remote process
 	const int cbMemSize  = cbCodeSize + cbDataSize + 3;
-	
+
 	// Find the process ID of the process which created the specified window
 	dwThreadId = GetWindowThreadProcessId(hwnd, &dwProcessId);
-	
+
 	// Open the remote process so we can allocate some memory in it
 	hProcess = OpenProcess(INJECT_PRIVELIDGE, FALSE, dwProcessId);
 
@@ -91,29 +91,29 @@ DWORD InjectRemoteThread(HWND hwnd, LPTHREAD_START_ROUTINE lpCode, DWORD cbCodeS
 	// Write a copy of the INJTHREAD to the remote process. This structure
 	// MUST start on a 32bit boundary
 	pRemoteData = (void *)((BYTE *)pdwRemoteCode + ((cbCodeSize + 4) & ~ 3));
-	
+
 	// Put DATA in the remote thread's memory block
 	WriteProcessMemory(hProcess, pRemoteData, lpData, cbDataSize, &dwWritten);
 
 	// Create the remote thread!!!
 #ifndef _DEBUG
-	hRemoteThread = CreateRemoteThread(hProcess, NULL, 0, 
+	hRemoteThread = CreateRemoteThread(hProcess, NULL, 0,
 		(LPTHREAD_START_ROUTINE)pdwRemoteCode, pRemoteData, 0, &dwRemoteThreadId);
 #endif
 
 	// Wait for the thread to terminate
 	WaitForSingleObject(hRemoteThread, INFINITE);
-	
+
 	// Read the user-structure back again
 	if(!ReadProcessMemory(hProcess, pRemoteData, lpData, cbDataSize, &dwRead))
 	{
 		//an error occurred
 	}
-	
+
 	GetExitCodeThread(hRemoteThread, &dwExitCode);
-	
+
 	CloseHandle(hRemoteThread);
-	
+
 	// Free the memory in the remote process
 	pVirtualFreeEx(hProcess, pdwRemoteCode, 0, MEM_RELEASE);
 	CloseHandle(hProcess);

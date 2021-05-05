@@ -1,7 +1,7 @@
 //
 //	StyleEdit.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	Implements the Style Editor dialog box
@@ -35,7 +35,7 @@ typedef struct
 
 static StyleEditState state;
 
-void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList, 
+void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList,
 					BOOL fAllStyles, BOOL fExtControl);
 
 //
@@ -47,7 +47,7 @@ UINT CALLBACK StyleEditWndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
 	TCHAR szText[120];
 
 	DWORD dwStyle;
-		
+
 	switch(uCode)
 	{
 	case WFN_END:
@@ -69,9 +69,9 @@ UINT CALLBACK StyleEditWndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
 			wsprintf(szText, _T("Window %08X\n\r\n\rUnable to copy this window's styles, \n\rbecause it belongs to a different class.  "), hwnd);
 			MessageBox(hwndDlg, szText, szAppName, MB_OK|MB_ICONINFORMATION);
 		}
-		
+
 		break;
-	
+
 	}
 	return 0;
 }
@@ -139,7 +139,7 @@ INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 				SetWindowLong(state->hwndTarget, GWL_EXSTYLE, dwStyle);
 			else
 				SetWindowLong(state->hwndTarget, GWL_STYLE, dwStyle);
-			
+
 			SetWindowPos(state->hwndTarget, 0,
 				0,0,0,0,
 				SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|
@@ -166,14 +166,14 @@ INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 			if(LOWORD(wParam) == IDC_LIST1)
 			{
 				int cursel, caretidx;
-				
+
 				hwndList = GetDlgItem(hwnd, IDC_LIST1);
 
 				dwStyle  = GetDlgItemBaseInt(hwnd, IDC_EDIT1, 16);
 
 				caretidx = (int)SendMessage(hwndList, LB_GETCARETINDEX, 0, 0);
 				cursel   = (int)SendMessage(hwndList, LB_GETSEL, caretidx, 0);
-				
+
 				if(cursel)
 					dwStyle |=  SendMessage(hwndList, LB_GETITEMDATA, caretidx, 0);
 				else
@@ -202,7 +202,7 @@ void ShowWindowStyleEditor(HWND hwndParent, HWND hwndTarget, BOOL fExtended)
 
 	DialogBoxParam(GetModuleHandle(0), MAKEINTRESOURCE(IDD_STYLE_EDIT), hwndParent, StyleEditProc, (LPARAM)&state);
 
-	// Update the main display 
+	// Update the main display
 	SetGeneralInfo(hwndTarget);
 	SetStyleInfo(hwndTarget);
 }

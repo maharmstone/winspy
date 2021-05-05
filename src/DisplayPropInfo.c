@@ -1,6 +1,6 @@
 //
 //	DisplayPropInfo.c
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //	Freeware
 //
 //	void SetPropertyInfo(HWND hwnd)
@@ -28,7 +28,7 @@ BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPTSTR lpszString, HANDLE hData, ULONG_P
 	LVITEM lvitem;
 
 	wsprintf(ach, szHexFmt, hData);
-	
+
 	lvitem.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM | LVIF_STATE;
 	lvitem.iSubItem = 0;
 	lvitem.pszText = ach;
@@ -38,7 +38,7 @@ BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPTSTR lpszString, HANDLE hData, ULONG_P
 	lvitem.iImage = 0;
 
 	ListView_InsertItem(hwndList, &lvitem);
-	
+
 	// check that lpszString is a valid string, and not an ATOM in disguise
 	if(((DWORD)lpszString & 0xffff0000) == 0)
 	{
@@ -58,7 +58,7 @@ BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPTSTR lpszString, HANDLE hData, ULONG_P
 //
 void EnumWindowProps(HWND hwnd, HWND hwndList)
 {
-	ListView_DeleteAllItems(hwndList);	
+	ListView_DeleteAllItems(hwndList);
 	EnumPropsEx(hwnd, PropEnumProcEx, (ULONG_PTR)hwndList);
 }
 

@@ -1,10 +1,10 @@
 //
 //	WinSpyTree.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
-//	Populate the treeview control on the main 
+//	Populate the treeview control on the main
 //  window with the system window hierarchy.
 //
 
@@ -73,7 +73,7 @@ typedef struct
 {
 	LPCTSTR szName;			// Class name
 	int   index;			// Index into image list
-	ATOM  atom;             // (Unused) Might use for fast lookups. 
+	ATOM  atom;             // (Unused) Might use for fast lookups.
 
     DWORD  dwAdjustStyles;	// Only valid if one of these styles is set
 							// Default = 0 (don't care)
@@ -82,7 +82,7 @@ typedef struct
 
 }  ClassImageLookup;
 
-ClassImageLookup ClassImage[] = 
+ClassImageLookup ClassImage[] =
 {
 	_T("#32770"),               0,  0, 0, 0,
 	_T("Button"),               4,  0, BS_GROUPBOX,			0xF,
@@ -96,7 +96,7 @@ ClassImageLookup ClassImage[] =
 	_T("ComboBox"),             5,  0, 0, 0,
 	_T("Edit"),                 6,  0, 0, 0,
 	_T("ListBox"),              7,  0, 0, 0,
-	
+
 	_T("RICHEDIT"),				8,  0, 0, 0,
 	_T("RichEdit20A"),			8,  0, 0, 0,
 	_T("RichEdit20W"),			8,  0, 0, 0,
@@ -150,7 +150,7 @@ void InitAtomList()
 	for(i = 0; ClassImage[i].szName[0] != 0; i++)
 	{
 		atom = GlobalFindAtom(ClassImage[i].szName);
-		
+
 		ClassImage[i].atom = atom;
 	}
 }
@@ -174,7 +174,7 @@ int IconFromClassName(TCHAR *szName, DWORD dwStyle)
 			{
 				if(dwMask != 0)
 				{
-					if(ClassImage[i].dwAdjustStyles == (dwStyle & dwMask)) 
+					if(ClassImage[i].dwAdjustStyles == (dwStyle & dwMask))
 						return  (ClassImage[i].index + CONTROL_START);
 				}
 				else
@@ -191,7 +191,7 @@ int IconFromClassName(TCHAR *szName, DWORD dwStyle)
 
 		i++;
 	}
-	
+
 	return -1;
 }
 
@@ -244,9 +244,9 @@ int FormatWindowText(HWND hwnd, TCHAR szTotal[])
 		}
 	}
 	else
-	{	
+	{
 		szClass[0] = _T('\0');
-	}	
+	}
 
 	len = lstrlen(szTotal);
 	pszCaption = szTotal + len;
@@ -257,9 +257,9 @@ int FormatWindowText(HWND hwnd, TCHAR szTotal[])
 	// Window title, enclosed in quotes
 	// if(GetWindowText(hwnd, temp, sizeof(temp) / sizeof(TCHAR)))
 	SendMessageTimeout(
-		hwnd, 
-		WM_GETTEXT, 
-		MAX_WINTEXT_LEN, 
+		hwnd,
+		WM_GETTEXT,
+		MAX_WINTEXT_LEN,
 		(LPARAM)pszCaption,
 		SMTO_ABORTIFHUNG, 100, &dwResult);
 	//{
@@ -319,8 +319,8 @@ WinProc *GetProcessWindowStack(HWND hwndTree, HWND hwnd)
 
 	SHGetFileInfo(path, 0, &shfi, sizeof(shfi), SHGFI_SMALLICON | SHGFI_ICON);
 	hImgList = TreeView_GetImageList(hwndTree, TVSIL_NORMAL);
-	
-	
+
+
 	// Add the root item
 	tv.hParent              = TVI_ROOT;
 	tv.hInsertAfter         = TVI_LAST;
@@ -351,9 +351,9 @@ WinProc *GetProcessWindowStack(HWND hwndTree, HWND hwnd)
 BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
 {
 	HWND hwndTree = (HWND)lParam;
-	
+
 	static TCHAR szTotal[MIN_FORMAT_LEN];
-	
+
 	int i, idx;
 
 	// Style is used to decide which bitmap to display in the tree
@@ -371,7 +371,7 @@ BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
 	TVINSERTSTRUCT tv;
 
 	//
-	//	
+	//
 	//
 	//
 	WinProc *winProc = GetProcessWindowStack(hwndTree, hwnd);
@@ -379,14 +379,14 @@ BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
 
 
 	idx = FormatWindowText(hwnd, szTotal);
-	
+
 	// Prepare the TVINSERTSTRUCT object
 	ZeroMemory(&tv, sizeof(tv));
 	tv.hParent         = winProc->hRoot;
 	tv.hInsertAfter    = TVI_LAST;
 	tv.item.mask       = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
 	tv.item.pszText    = szTotal;
-	tv.item.cchTextMax = lstrlen(szTotal); 
+	tv.item.cchTextMax = lstrlen(szTotal);
 	tv.item.lParam     = (LPARAM)(hwnd);
 
 	//
@@ -425,7 +425,7 @@ BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
 
 	//set the selected bitmap to be the same
 	tv.item.iSelectedImage = tv.item.iImage;
-	
+
 	//
 	// Decide where to place this item
 	//
@@ -441,8 +441,8 @@ BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
 			//make a new parent stack entry
 			WindowStack[winProc->nWindowZ].hRoot = hTreeLast;
 			WindowStack[winProc->nWindowZ].hwnd  = hwndParent;
-			
-			if(winProc->nWindowZ < MAX_WINDOW_DEPTH-1) 
+
+			if(winProc->nWindowZ < MAX_WINDOW_DEPTH-1)
 				winProc->nWindowZ++;
 
 			tv.hParent = hTreeLast;
@@ -468,11 +468,11 @@ BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
 	{
 		tv.hParent = WindowStack[winProc->nWindowZ - 1].hRoot;
 	}
-	
+
 	// Finally add the node
 	hTreeLast = TreeView_InsertItem(hwndTree, &tv);
 	hwndLast  = hwnd;
-	
+
 	return TRUE;
 }
 
@@ -488,7 +488,7 @@ void FillGlobalWindowTree(HWND hwnd)
 	static TCHAR ach[MIN_FORMAT_LEN];
 
 	FormatWindowText(GetDesktopWindow(), ach);
-	
+
 	//Add the root item
 	tv.hParent              = TVI_ROOT;
 	tv.hInsertAfter         = TVI_LAST;
@@ -503,14 +503,14 @@ void FillGlobalWindowTree(HWND hwnd)
 	//tv.itemex.iIntegral = 1;
 
 	//hRoot = TreeView_InsertItem(hwndTree, &tv);
-	
+
 	//WindowStack[0].hRoot = hRoot;
 	//WindowStack[0].hwnd = 0;
 
 	//nWindowZ = 1;
 
 	// EnumChildWindows does the hard work for us
-	// 
+	//
 	EnumChildWindows(GetDesktopWindow(), AllWindowProc, (LPARAM)hwndTree);
 }
 
@@ -528,7 +528,7 @@ void InitGlobalWindowTree(HWND hwndTree)
 	{
 		// Create an empty image list
 		hImgList = ImageList_Create(16,16,ILC_COLOR32 /*ILC_COLORDDB*/|ILC_MASK,NUM_CLASS_BITMAPS,8);
-	
+
 		// Load our bitmap and add it to the image list
 		hBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_WINDOW_VISIBLE));
 		ImageList_AddMasked(hImgList,hBitmap,RGB(255,0,255));
@@ -537,7 +537,7 @@ void InitGlobalWindowTree(HWND hwndTree)
 		hBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_WINDOW_INVISIBLE));
 		ImageList_AddMasked(hImgList,hBitmap,RGB(255,0,255));
 		DeleteObject(hBitmap);
-	
+
 		// Assign the image list to the treeview control
 		TreeView_SetImageList(hwndTree, hImgList, TVSIL_NORMAL);
 	}
@@ -551,7 +551,7 @@ void InitGlobalWindowTree(HWND hwndTree)
 	SendMessage(hwndTab, TCM_INSERTITEM, 0, (LPARAM)&tcitem);
 
 	//subclass the tab control to remove flicker whilst it is resized
-	RemoveTabCtrlFlicker(hwndTab); 
+	RemoveTabCtrlFlicker(hwndTab);
 
 	//InitAtomList();
 }
@@ -582,7 +582,7 @@ HTREEITEM FindTreeItemByHwnd(HWND hwndTree, HWND hwndTarget, HTREEITEM hItem)
 		item.hItem  = hItem;
 		item.mask   = TVIF_PARAM | TVIF_CHILDREN;
 		item.lParam = (LPARAM)hwndTarget;
-		
+
 		// Search!
 		SendMessage(hwndTree, TVM_GETITEM, 0, (LPARAM)&item);
 
@@ -623,23 +623,23 @@ void RefreshTreeView(HWND hwndTree)
 	WinStackCount = 0;
 
 	EnableWindow(hwndTree, TRUE);
-		
+
 	dwStyle = GetWindowLong(hwndTree, GWL_STYLE);
-		
+
 	// We need to hide the treeview temporarily (turn OFF WS_VISIBLE)
 	SendMessage(hwndTree, WM_SETREDRAW, FALSE, 0);
 	SetWindowLong(hwndTree, GWL_STYLE, dwStyle & ~WS_VISIBLE);
-		
+
 	TreeView_DeleteAllItems(hwndTree);
-		
+
 	FillGlobalWindowTree(GetParent(hwndTree));
 
-	
+
 	SendMessage(hwndTree, WM_SETREDRAW, TRUE, 0);
 	dwStyle = GetWindowLong(hwndTree, GWL_STYLE);
 	SetWindowLong(hwndTree, GWL_STYLE, dwStyle | WS_VISIBLE);
 
-		
+
 	SetWindowPos(hwndTree, 0, 0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|
 		SWP_NOZORDER|SWP_NOACTIVATE|SWP_DRAWFRAME);
 

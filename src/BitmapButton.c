@@ -1,6 +1,6 @@
 //
 //	BitmapButton.c
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //	Freeware
 //
 //	void MakeBitmapButton(HWND hwnd, UINT uIconId)
@@ -73,7 +73,7 @@ static LRESULT CALLBACK BBProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 	static BOOL mouseOver;
 	POINT pt;
 	RECT  rect;
-	
+
 	switch(msg)
 	{
 	case WM_LBUTTONDBLCLK:
@@ -81,7 +81,7 @@ static LRESULT CALLBACK BBProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 
 	case WM_MOUSEMOVE:
-		
+
 		if(!mouseOver)
 		{
 			SetTimer(hwnd, 0, 15, 0);
@@ -94,7 +94,7 @@ static LRESULT CALLBACK BBProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		GetCursorPos(&pt);
 		ScreenToClient(hwnd, &pt);
 		GetClientRect(hwnd, &rect);
-		
+
 		if(PtInRect(&rect, pt))
 		{
 			if(!mouseOver)
@@ -109,7 +109,7 @@ static LRESULT CALLBACK BBProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 			KillTimer(hwnd, 0);
 			InvalidateRect(hwnd, 0, 0);
 		}
-	
+
 		return 0;
 
 	// Under Win2000 / XP, Windows sends a strange message
@@ -121,7 +121,7 @@ static LRESULT CALLBACK BBProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 	}
 
-	return CallWindowProc(oldproc, hwnd, msg, wParam, lParam); 
+	return CallWindowProc(oldproc, hwnd, msg, wParam, lParam);
 }
 
 //BOOL DrawThemedBitmapButton(DRAWITEMSTRUCT *dis)
@@ -159,17 +159,17 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 	int ix, iy;			// Icon offset
 	int bx, by;			// border sizes
 	int sxIcon, syIcon;	// Icon size
-	int xoff, yoff;		// 
-	
+	int xoff, yoff;		//
+
 	TCHAR szText[100];
 	int   nTextLen;
-	
+
 	HICON hIcon;
 	DWORD dwStyle = GetWindowLong(dis->hwndItem, GWL_STYLE);
 
 	DWORD dwDTflags = DT_CENTER | DT_SINGLELINE | DT_VCENTER;
 	BOOL  fRightAlign;
-	
+
 	// XP/Vista theme support
 	DWORD dwThemeFlags;
 	HTHEME hTheme;
@@ -190,7 +190,7 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 	case ODA_FOCUS:
 	case ODA_SELECT:
 	case ODA_DRAWENTIRE:
-	
+
 		// Retrieve button text
 		GetWindowText(dis->hwndItem, szText, sizeof(szText) / sizeof(TCHAR));
 
@@ -209,11 +209,11 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 
 		if(PtInRect(&rect, pt))
 			dis->itemState |= ODS_HOTLIGHT;
-	
+
 		// border dimensions
 		bx = 2;
 		by = 2;
-		
+
 		// icon offsets
 		if(nTextLen == 0)
 		{
@@ -227,7 +227,7 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 			else
 				ix = rect.left + bx + X_ICON_BORDER;
 		}
-	
+
 		// center image vertically
 		iy = (rect.bottom-rect.top - syIcon) / 2;
 
@@ -261,8 +261,8 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 				DrawThemeBackground(hTheme, dis->hDC, BP_PUSHBUTTON, dwThemeFlags, &dis->rcItem, 0);
 			else
 				DrawFrameControl(dis->hDC, &dis->rcItem, DFC_BUTTON, DFCS_BUTTONPUSH | DFCS_PUSHED | DFCS_FLAT);
-			
-			
+
+
 			// Offset contents to make it look "pressed"
 			if(hTheme == NULL)
 			{
@@ -287,7 +287,7 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 		// Draw the icon
 		DrawIconEx(dis->hDC, ix + xoff, iy + yoff, hIcon, sxIcon, syIcon, 0, 0, DI_NORMAL);
 
-		// Adjust position of window text 
+		// Adjust position of window text
 		if(fRightAlign)
 		{
 			rect.left  += bx + X_ICON_BORDER;
@@ -298,7 +298,7 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 			rect.right -= bx + X_ICON_BORDER;
 			rect.left  += sxIcon + bx + X_ICON_BORDER;
 		}
-		
+
 		// Draw the text
 		OffsetRect(&rect, 0, -1);
 		SetBkMode(dis->hDC, TRANSPARENT);
@@ -309,10 +309,10 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 		if((dis->itemState & ODS_FOCUS) && nTextLen > 0)
 		{
 			if(!(dis->itemState & ODS_NOFOCUSRECT))
-			{	
+			{
 				// Get a "fresh" copy of the button rectangle
 				CopyRect(&rect, &dis->rcItem);
-				
+
 				if(fRightAlign)
 					rect.right -= sxIcon + bx;
 				else

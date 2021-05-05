@@ -1,7 +1,7 @@
 //
 //	WindowFromPointEx.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	HWND WindowFromPointEx(POINT pt)
@@ -42,7 +42,7 @@ static BOOL CALLBACK FindBestChildProc(HWND hwnd, LPARAM lParam)
 	{
 		// work out area of child window
 		a = (rect.right-rect.left) * (rect.bottom-rect.top);
-	
+
 		// if this child window is smaller than the
 		// current "best", then choose this one
 		if(a < dwArea && (IsWindowVisible(hwnd) || g_fShowHidden == TRUE))
@@ -72,7 +72,7 @@ static BOOL CALLBACK FindBestChildProc(HWND hwnd, LPARAM lParam)
 //  level (i.e. from the parent of what WindowFromPoint returned).
 //
 //	Once we have this window, we enumerate ALL children of this window
-//  ourselves, and find the one that best fits under the mouse - 
+//  ourselves, and find the one that best fits under the mouse -
 //  the smallest window that fits, in fact.
 //
 //	I've tested this on alot of different apps, and it seems
@@ -95,7 +95,7 @@ static HWND FindBestChild(HWND hwndFound, POINT pt)
 	hwndGlobal = 0;
 
 	hwnd = GetParent(hwndFound);
-	
+
 	dwStyle = GetWindowLong(hwndFound, GWL_STYLE);
 
 	// The original window might already be a top-level window,
@@ -126,22 +126,22 @@ static HWND FindBestChild(HWND hwndFound, POINT pt)
 HWND WindowFromPointEx(POINT pt, BOOL fShowHidden)
 {
 	HWND hWndPoint;
-	
+
 	g_fShowHidden = fShowHidden;
 
 	//
 	// First of all find the parent window under the mouse
-	// We are working in SCREEN coordinates	
-	// 
+	// We are working in SCREEN coordinates
+	//
 	hWndPoint = WindowFromPoint(pt);
-	
+
 	if(hWndPoint == 0)
 		return 0;
 
 	// WindowFromPoint is not too accurate. There is quite likely
 	// another window under the mouse.
 	hWndPoint = FindBestChild(hWndPoint, pt);
-	
+
 	//if we don't allow hidden windows, then return the parent
 	if(!g_fShowHidden)
 	{

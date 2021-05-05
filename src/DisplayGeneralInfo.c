@@ -1,6 +1,6 @@
 //
 //	DisplayGeneralInfo.c
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //	Freeware
 //
 //	void SetGeneralInfo(HWND hwnd)
@@ -43,7 +43,7 @@ void SetGeneralInfo(HWND hwnd)
 
 	SendDlgItemMessage(hwndDlg, IDC_CAPTION2, CB_RESETCONTENT, 0, 0);
 
-	// SendMessage is better than GetWindowText, 
+	// SendMessage is better than GetWindowText,
 	// because it gets text of children in other processes
 	if(spy_fPassword == FALSE)
 	{
@@ -52,7 +52,7 @@ void SetGeneralInfo(HWND hwnd)
 		ach[0] = 0;
 
 		SendMessageTimeout(hwnd, WM_GETTEXT, sizeof(ach) / sizeof(TCHAR), (LPARAM)ach,
-			SMTO_ABORTIFHUNG, 100, &dwResult); 
+			SMTO_ABORTIFHUNG, 100, &dwResult);
 
 		SetDlgItemText(hwndDlg, IDC_CAPTION1, ach);	// edit box
 		SetDlgItemText(hwndDlg, IDC_CAPTION2, ach);	// combo box
@@ -72,7 +72,7 @@ void SetGeneralInfo(HWND hwnd)
 
 	//style
 	wsprintf(ach, szHexFmt, GetWindowLong(hwnd, GWL_STYLE));
-	
+
 	if(IsWindowVisible(hwnd))	lstrcat(ach, _T("  (visible, "));
 	else						lstrcat(ach, _T("  (hidden, "));
 
@@ -86,7 +86,7 @@ void SetGeneralInfo(HWND hwnd)
 	x1 = rect.left;
 	y1 = rect.top;
 
-	wsprintf(ach, _T("(%d,%d) - (%d,%d)  -  %dx%d"), 
+	wsprintf(ach, _T("(%d,%d) - (%d,%d)  -  %dx%d"),
 		rect.left,rect.top, rect.right,rect.bottom,
 		(rect.right-rect.left), (rect.bottom-rect.top));
 
@@ -100,16 +100,16 @@ void SetGeneralInfo(HWND hwnd)
 
 	OffsetRect(&rect, -rect.left, -rect.top);
 	OffsetRect(&rect, x1, y1);
-	
-	wsprintf(ach, _T("(%d,%d) - (%d,%d)  -  %dx%d"), 
+
+	wsprintf(ach, _T("(%d,%d) - (%d,%d)  -  %dx%d"),
 		rect.left,rect.top, rect.right,rect.bottom,
 		(rect.right-rect.left), (rect.bottom-rect.top));
 
-	SetDlgItemText(hwndDlg, IDC_CLIENTRECT, ach);	
+	SetDlgItemText(hwndDlg, IDC_CLIENTRECT, ach);
 
 	//restored rect
 	/*GetWindowPlacement(hwnd, &wp);
-	wsprintf(ach, _T("(%d,%d) - (%d,%d)  -  %dx%d"), 
+	wsprintf(ach, _T("(%d,%d) - (%d,%d)  -  %dx%d"),
 		wp.rcNormalPosition.left, wp.rcNormalPosition.top,
 		wp.rcNormalPosition.right, wp.rcNormalPosition.bottom,
 		(wp.rcNormalPosition.right-wp.rcNormalPosition.left),
@@ -126,7 +126,7 @@ void SetGeneralInfo(HWND hwnd)
 		ShowDlgItem(hwndDlg, IDC_WINDOWPROC,  SW_SHOW);
 		ShowDlgItem(hwndDlg, IDC_WINDOWPROC2, SW_HIDE);
 	}
-	else					
+	else
 	{
 		wsprintf(ach, szHexFmt, spy_WndProc);
 		SetDlgItemText(hwndDlg, IDC_WINDOWPROC2, ach);
@@ -151,7 +151,7 @@ void SetGeneralInfo(HWND hwnd)
 	numbytes = GetClassLong(hwnd, GCL_CBWNDEXTRA);
 	i = 0;
 
-	SendDlgItemMessage(hwndDlg, IDC_WINDOWBYTES, CB_RESETCONTENT, 0, 0);	
+	SendDlgItemMessage(hwndDlg, IDC_WINDOWBYTES, CB_RESETCONTENT, 0, 0);
 	EnableDlgItem(hwndDlg, IDC_WINDOWBYTES, numbytes != 0);
 
 	// Retrieve all the window bytes + add to combo box

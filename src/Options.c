@@ -1,7 +1,7 @@
 //
 //	Options.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	Implements the Options dialog for WinSpy
@@ -43,7 +43,7 @@ void LoadSettings(void)
 	HKEY hkey;
 
 	RegCreateKeyEx(HKEY_CURRENT_USER, szRegLoc, 0, _T(""), 0, KEY_READ, NULL, &hkey, NULL);
-	
+
 	fSaveWinPos     = GetSettingBool(hkey, _T("SavePosition"),		TRUE);
 	fAlwaysOnTop    = GetSettingBool(hkey, _T("AlwaysOnTop"),		FALSE);
 	fMinimizeWinSpy = GetSettingBool(hkey, _T("MinimizeWinSpy"),	TRUE);
@@ -82,7 +82,7 @@ void SaveSettings(void)
 	WriteSettingBool(hkey, _T("EnableToolTips"),    fEnableToolTips);
 	WriteSettingInt (hkey, _T("TreeItems"),         uTreeInclude);
 	WriteSettingInt (hkey, _T("PinCorner"),         uPinnedCorner);
-	
+
 	WriteSettingInt (hkey, _T("xpos"),              ptPinPos.x);
 	WriteSettingInt (hkey, _T("ypos"),              ptPinPos.y);
 
@@ -102,11 +102,11 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 		CheckDlgButton(hwnd, IDC_OPTIONS_SHOWHIDDEN,    fShowDimmed);
 		CheckDlgButton(hwnd, IDC_OPTIONS_SHOWINCAPTION, fShowInCaption);
 		CheckDlgButton(hwnd, IDC_OPTIONS_TOOLTIPS,		fEnableToolTips);
-		
-		CheckDlgButton(hwnd, IDC_OPTIONS_INCHANDLE, 
+
+		CheckDlgButton(hwnd, IDC_OPTIONS_INCHANDLE,
 			(uTreeInclude & WINLIST_INCLUDE_HANDLE) ? TRUE : FALSE);
 
-		CheckDlgButton(hwnd, IDC_OPTIONS_INCCLASS,  
+		CheckDlgButton(hwnd, IDC_OPTIONS_INCCLASS,
 			(uTreeInclude & WINLIST_INCLUDE_CLASS)  ? TRUE : FALSE);
 
 		return TRUE;
@@ -118,7 +118,7 @@ INT_PTR CALLBACK OptionsDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
 		{
-		case IDOK: 
+		case IDOK:
 
 			fSaveWinPos     = IsDlgButtonChecked(hwnd, IDC_OPTIONS_SAVEPOS);
 			fFullDragging   = IsDlgButtonChecked(hwnd, IDC_OPTIONS_FULLDRAG);

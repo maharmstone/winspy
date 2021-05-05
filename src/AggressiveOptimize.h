@@ -30,7 +30,7 @@
 // exe bloat. Very noticable for smaller programs.
 // The "trick" for this is to use the undocumented FILEALIGN linker parm to change the
 // padding from 4k to 1/2k, which results in a much smaller exe - anywhere from 20%-75%
-// depending on the size. 
+// depending on the size.
 
 
 #ifdef NDEBUG

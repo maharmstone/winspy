@@ -15,7 +15,7 @@ extern "C" {
 //	Define a structure for each property page in
 //  the main window
 //
-typedef struct 
+typedef struct
 {
 	HWND    hwnd;
 	LPCTSTR szText;
@@ -36,7 +36,7 @@ extern DialogTab WinSpyTab[];
 //
 //	Simple style-lookup
 //
-typedef struct 
+typedef struct
 {
 	UINT    style;
 	LPCTSTR szName;
@@ -46,7 +46,7 @@ typedef struct
 //
 //	Extended Style table. 1 per window class
 //
-typedef struct 
+typedef struct
 {
 	DWORD   style;		// Single window style
 	LPCTSTR name;		// Textual name of style
@@ -72,7 +72,7 @@ typedef struct
 //	Use this structure to list each window class with its
 //	associated style table
 //
-typedef struct 
+typedef struct
 {
 	LPCTSTR        szClassName;
 	StyleLookupEx  *stylelist;
@@ -100,7 +100,7 @@ void ForceVisibleDisplay(HWND hwnd);
 #define WINSPY_MINIMIZED 1
 #define WINSPY_NORMAL    2
 #define WINSPY_EXPANDED  3
-#define WINSPY_LASTMAX	 4	// Only use with SetWindowLayout 
+#define WINSPY_LASTMAX	 4	// Only use with SetWindowLayout
 							// (chooses between normal/expanded)
 
 //
@@ -165,7 +165,7 @@ void ShowOptionsDlg			(HWND hwndParent);
 void LoadSettings(void);
 void SaveSettings(void);
 
-BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass, 
+BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass,
 						 WNDPROC *pProc, TCHAR *pszText, int nTextLen);
 
 BOOL RemoveTabCtrlFlicker(HWND hwndTab);
@@ -231,7 +231,7 @@ extern HWND	 hwndToolTip;	// tooltip for main window controls only
 
 //
 //	Spy-window globals
-//	
+//
 //
 extern HWND       spy_hCurWnd;
 extern WNDCLASSEX spy_WndClassEx;

@@ -1,6 +1,6 @@
 //
 //	DisplayWindowInfo.c
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //	Freeware
 //
 //  void SetWindowInfo(HWND hwnd)
@@ -23,8 +23,8 @@ static BOOL CALLBACK ChildWindowProc(HWND hwnd, LPARAM lParam)
 	TCHAR  cname[256];
 	TCHAR  wname[256];
 	LVITEM lvitem;
-	
-	//only display 1st generation (1-deep) children - 
+
+	//only display 1st generation (1-deep) children -
 	//(don't display child windows of child windows)
 	if(GetParent(hwnd) == spy_hCurWnd)
 	{
@@ -43,7 +43,7 @@ static BOOL CALLBACK ChildWindowProc(HWND hwnd, LPARAM lParam)
 		ListView_InsertItem((HWND)lParam, &lvitem);
 		ListView_SetItemText((HWND)lParam, 0, 1, cname);
 		ListView_SetItemText((HWND)lParam, 0, 2, wname);
-	}	
+	}
 	return TRUE;
 }
 
@@ -53,7 +53,7 @@ static BOOL CALLBACK SiblingWindowProc(HWND hwnd, LPARAM lParam)
 	TCHAR  cname[256];
 	TCHAR  wname[256];
 	LVITEM lvitem;
-		
+
 	//sibling windows must share the same parent
 	if(spy_hCurWnd != hwnd && GetParent(hwnd) == GetParent(spy_hCurWnd))
 	{
@@ -72,13 +72,13 @@ static BOOL CALLBACK SiblingWindowProc(HWND hwnd, LPARAM lParam)
 		ListView_InsertItem((HWND)lParam, &lvitem);
 		ListView_SetItemText((HWND)lParam, 0, 1, cname);
 		ListView_SetItemText((HWND)lParam, 0, 2, wname);
-	}	
+	}
 
 	return TRUE;
 }
 
 //
-//	Get a list of all Child + Siblings for the specified window - 
+//	Get a list of all Child + Siblings for the specified window -
 //  Update the Windows tab accordingly
 //
 void SetWindowInfo(HWND hwnd)

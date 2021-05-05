@@ -1,12 +1,12 @@
 //
 //	GetRemoteClassInfoEx.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //  BOOL GetRemoteClassInfoEx(HWND hwnd)
 //
-//  In order to retrieve private class information for a 
+//  In order to retrieve private class information for a
 //  window in another process, we have to create
 //  a remote thread in that process and call GetClassInfoEx from
 //  there.
@@ -31,7 +31,7 @@ typedef UINT (WINAPI *PROCSENDMESSAGETO)  (HWND, UINT, WPARAM, LPARAM, UINT, UIN
 //
 //	Define a structure for the remote thread to use
 //
-typedef struct 
+typedef struct
 {
 	PROCGETCLASSINFOEX fnGetClassInfoEx;
 	PROCGETWINDOWLONG  fnGetWindowLong;
@@ -41,7 +41,7 @@ typedef struct
 	HWND        hwnd;		//window we want to get class info for
 	ATOM        atom;		//class atom of window
 	HINSTANCE   hInst;
-	
+
 	TCHAR		szClassName[128];
 
 	WNDCLASSEX  wcOutput;
@@ -82,8 +82,8 @@ static DWORD WINAPI GetClassInfoExProc(LPVOID *pParam)
 		// Nul-terminate in case the gettext fails
 		pInjData->szText[0] = _T('\0');
 
-		pInjData->fnSendMessageTimeout(pInjData->hwnd, WM_GETTEXT, 
-				pInjData->nTextSize, (LPARAM)pInjData->szText, 
+		pInjData->fnSendMessageTimeout(pInjData->hwnd, WM_GETTEXT,
+				pInjData->nTextSize, (LPARAM)pInjData->szText,
 				SMTO_ABORTIFHUNG, 100, &dwResult);
 	}
 
@@ -93,7 +93,7 @@ static DWORD WINAPI GetClassInfoExProc(LPVOID *pParam)
 
 static void AfterThreadProc(void) { }
 
-#pragma check_stack 
+#pragma check_stack
 
 BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass, WNDPROC *pProc, TCHAR *pszText, int nTextLen)
 {
@@ -119,7 +119,7 @@ BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass, WNDPROC *pProc, TCHAR *p
 	InjData.fnSendMessageTimeout = (PROCSENDMESSAGETO)  GetProcAddress(hUser32, "SendMessageTimeoutA");
 	//InjData.fnGetWindowText  = (PROCGETWINDOWTEXT)  GetProcAddress(hUser32, "GetWindowTextA");
 #endif
-	
+
 	if(IsWindowUnicode(hwnd))
 	{
 		InjData.fnGetWindowLong  = (PROCGETWINDOWLONG)  GetProcAddress(hUser32, "GetWindowLongW");
@@ -154,7 +154,7 @@ BOOL GetRemoteWindowInfo(HWND hwnd, WNDCLASSEX *pClass, WNDPROC *pProc, TCHAR *p
 	{
 		InjData.fnGetWindowText = 0;
 	}
-	
+
 	//
 	// Inject the GetClassInfoExProc function, and our InjData structure!
 	//

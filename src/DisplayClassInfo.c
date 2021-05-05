@@ -1,6 +1,6 @@
 //
 //	DisplayClassInfo.c
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //	Freeware
 //
 //	void SetClassInfo(HWND hwnd)
@@ -37,10 +37,10 @@ void VerboseClassName(TCHAR ach[])
 	else if(lstrcmpi(ach, _T("#32772")) == 0)	lstrcat(ach, _T(" (Icon title)"));
 }
 
-//	
+//
 //	Class styles lookup table
 //
-StyleLookupType ClassLookup[] = 
+StyleLookupType ClassLookup[] =
 {
 	STYLE_(CS_BYTEALIGNCLIENT),
 	STYLE_(CS_BYTEALIGNWINDOW),
@@ -80,7 +80,7 @@ StyleLookupType IconLookup[] =
 };
 
 //
-//	Stock Cursor lookup table. These values must also be 
+//	Stock Cursor lookup table. These values must also be
 //  converted to stock cursor handles.
 //
 StyleLookupType CursorLookup[] =
@@ -114,7 +114,7 @@ StyleLookupType CursorLookup[] =
 //
 //	COLOR_xx Brush ID lookup. Needs no conversion
 //
-StyleLookupType BrushLookup[] = 
+StyleLookupType BrushLookup[] =
 {
 	STYLE_(COLOR_SCROLLBAR),
 	STYLE_(COLOR_BACKGROUND),
@@ -157,7 +157,7 @@ StyleLookupType BrushLookup[] =
 //	GetStockObject brush lookup. These values must be
 //  converted to valid stock brushes.
 //
-StyleLookupType StkBrLookup[] = 
+StyleLookupType StkBrLookup[] =
 {
 	STYLE_(WHITE_BRUSH),
 	STYLE_(BLACK_BRUSH),
@@ -182,7 +182,7 @@ StyleLookupType BrushLookup2[NUM_BRUSH_STYLES + NUM_STKBR_STYLES];
 #define NUM_BRUSH2_STYLES	(sizeof(BrushLookup2) /	sizeof(BrushLookup2[0]))
 
 //
-//	Prepare the resource lookup tables by obtaining the 
+//	Prepare the resource lookup tables by obtaining the
 //  internal handle values for all stock objects.
 //
 void InitStockStyleLists()
@@ -249,7 +249,7 @@ void SetClassInfo(HWND hwnd)
 	// be nice and give the proper name for the following class names
 	//
 	VerboseClassName(ach);
-	
+
 	SetDlgItemText(hwndDlg, IDC_CLASSNAME, ach);
 
 	//class style
@@ -284,7 +284,7 @@ void SetClassInfo(HWND hwnd)
 
 	//background brush handle
 	style = (UINT)GetClassLongPtr(hwnd, GCLP_HBRBACKGROUND);
-	
+
 	//first of all, search by COLOR_xxx value
 	if(-1 == FormatStyle(ach, BrushLookup, NUM_BRUSH_STYLES, style-1))
 	{
@@ -300,17 +300,17 @@ void SetClassInfo(HWND hwnd)
 	SetDlgItemText(hwndDlg, IDC_BKGNDBRUSH, ach);
 
 	//window procedure
-	if(spy_WndProc == 0)	
+	if(spy_WndProc == 0)
 	{
 		wsprintf(ach, _T("N/A"));
 	}
-	else					
+	else
 	{
 		wsprintf(ach, szHexFmt, spy_WndProc);
 		if(spy_WndProc != spy_WndClassEx.lpfnWndProc)
 			lstrcat(ach, _T(" (Subclassed)"));
 	}
-	
+
 	SetDlgItemText(hwndDlg, IDC_WNDPROC, ach);
 
 	SetDlgItemText(WinSpyTab[GENERAL_TAB].hwnd, IDC_WINDOWPROC2, ach);
@@ -324,7 +324,7 @@ void SetClassInfo(HWND hwnd)
 	SetDlgItemText(hwndDlg, IDC_CLASSPROC, ach);
 
 
-	
+
 	//instance handle
 	wsprintf(ach, szHexFmt, spy_WndClassEx.hInstance);
 	SetDlgItemText(hwndDlg, IDC_INSTANCEHANDLE, ach);
@@ -338,7 +338,7 @@ void SetClassInfo(HWND hwnd)
 	{
 		if(spy_WndClassEx.style & ClassLookup[i].style)
 		{
-			SendDlgItemMessage(hwndDlg, IDC_STYLELIST, CB_ADDSTRING, 0, 
+			SendDlgItemMessage(hwndDlg, IDC_STYLELIST, CB_ADDSTRING, 0,
 				(LPARAM)ClassLookup[i].szName);
 
 			numstyles++;

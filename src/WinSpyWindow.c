@@ -1,7 +1,7 @@
 //
 //	WinSpyWindow.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	All the window related functionality for the
@@ -68,8 +68,8 @@ void GetWorkArea(RECT *prcWinRect, RECT *prcWorkArea)
 	MONITORINFO mi;
 
 	hUser32 = GetModuleHandle(_T("USER32.DLL"));
-	
-	// if we havn't already tried, 
+
+	// if we havn't already tried,
 	if(fFindMultiMon == TRUE)
 	{
 		pMonitorFromRect = (MFR_PROC)GetProcAddress(hUser32, "MonitorFromRect");
@@ -105,7 +105,7 @@ void ForceVisibleDisplay(HWND hwnd)
 	GetWindowRect(hwnd, &rect);
 
 	hUser32 = GetModuleHandle(_T("USER32.DLL"));
-	
+
 	pMonitorFromRect = (MFR_PROC)GetProcAddress(hUser32, "MonitorFromRect");
 
 	if(pMonitorFromRect != 0)
@@ -125,11 +125,11 @@ void GetPinnedPosition(HWND hwnd, POINT *pt)
 {
 	RECT rect;
 	RECT rcDisplay;
-	
-	// 
+
+	//
 	GetWindowRect(hwnd, &rect);
 
-	// get 
+	// get
 //	SystemParametersInfo(SPI_GETWORKAREA, 0, &rcDisplay, FALSE);
 	GetWorkArea(&rect, &rcDisplay);
 
@@ -144,7 +144,7 @@ void GetPinnedPosition(HWND hwnd, POINT *pt)
 		uPinnedCorner |= PINNED_BOTTOM;
 	else
 		uPinnedCorner |= PINNED_TOP;
-	
+
 	if(fPinWindow == FALSE)
 		uPinnedCorner = PINNED_TOPLEFT;
 
@@ -274,7 +274,7 @@ void WinSpyDlg_SizeContents(HWND hwnd)
 
 	duExpanded.cx  = 432;//390;
 	duExpanded.cy  = duNormal.cy;
-	
+
 	// work out the size (in pixels) of each window layout
 	CalcDlgWindowSize(hwnd, &duMinimized, 0, &szMinimized);
 	CalcDlgWindowSize(hwnd, &duNormal,    0, &szNormal);
@@ -285,7 +285,7 @@ void WinSpyDlg_SizeContents(HWND hwnd)
 
 	// Locate main Property sheet control
 	hwndTab = GetDlgItem(hwnd, IDC_TAB1);
-	
+
 	// Get SCREEN coords of tab control
 	GetWindowRect(hwndTab, &rect);
 
@@ -296,7 +296,7 @@ void WinSpyDlg_SizeContents(HWND hwnd)
 	// Now we know what the border is between TAB and left-side
 	nLeftBorder   = rect.left - rect1.left;
 	nBottomBorder = rect1.bottom - rect.bottom;
-	
+
 	nDesiredTabWidth = (rect1.right - rect1.left) - nLeftBorder * 2;
 
 	//
@@ -319,13 +319,13 @@ void WinSpyDlg_SizeContents(HWND hwnd)
 
 	// Resize the tab control based on this biggest rect
 	SendMessage(hwndTab, TCM_ADJUSTRECT, TRUE, (LPARAM)&rect);
-	
+
 	nTabWidth  = rect.right-rect.left;
 	nTabHeight = rect.bottom-rect.top;
 
 	// Resize the tab control now we know how big it needs to be
 	SetWindowPos(hwndTab, hwnd, 0,0, nDesiredTabWidth, nTabHeight, SWP_SIZEONLY);
-	
+
 	//
 	// Tab control is now in place.
 	// Now find out exactly where to position every
@@ -337,14 +337,14 @@ void WinSpyDlg_SizeContents(HWND hwnd)
 	ScreenToClient(hwnd, (POINT *)&rect.right);
 
 	SendMessage(hwndTab, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
-	
+
 	x = rect.left;
 	y = rect.top;
 	cx = nPaneWidth;
 	cy = nPaneHeight;
 
 	nActualPaneWidth = rect.right-rect.left;
-	
+
 	// Center each dialog-tab in the tab control
 	x += (nActualPaneWidth - nPaneWidth) / 2;
 
@@ -353,13 +353,13 @@ void WinSpyDlg_SizeContents(HWND hwnd)
 	{
 		SetWindowPos(WinSpyTab[i].hwnd, 	hwndTab, x, y, cx, cy, SWP_NOACTIVATE);
 	}
-	
+
 
 	SetWindowPos(hwnd, 0, 0, 0, szMinimized.cx, szMinimized.cy, SWP_NOMOVE|SWP_NOZORDER);
-	
+
 	// Even though we are initially minimized, we want to
 	// automatically expand to normal view the first time a
-	// window is selected. 
+	// window is selected.
 	szCurrent = szMinimized;
 	szLastMax = szNormal;
 	szLastExp = szExpanded;
@@ -388,7 +388,7 @@ UINT GetWindowLayout(HWND hwnd)
 	BOOL fxMaxed,  fyMaxed;
 
 	GetWindowRect(hwnd, &rect);
-	
+
 	fyMaxed = GetRectHeight(&rect) > szMinimized.cy;
 	fxMaxed = GetRectWidth(&rect) >= szExpanded.cx;
 
@@ -462,22 +462,22 @@ void SetWindowLayout(HWND hwnd, UINT uLayout)
 	case PINNED_TOPLEFT:
 		ptPos = ptPinPos;
 		break;
-		
+
 	case PINNED_TOPRIGHT:
 		ptPos.x = ptPinPos.x - psz->cx;
 		ptPos.y = ptPinPos.y;
 		break;
-		
+
 	case PINNED_BOTTOMRIGHT:
 		ptPos.x = ptPinPos.x - psz->cx;
 		ptPos.y = ptPinPos.y - psz->cy;
 		break;
-		
+
 	case PINNED_BOTTOMLEFT:
 		ptPos.x = ptPinPos.x;
 		ptPos.y = ptPinPos.y - psz->cy;
 		break;
-		
+
 	}
 
 	// Switch into the new layout!
@@ -494,40 +494,40 @@ UINT WinSpyDlg_Size(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 	cx = LOWORD(lParam);
 	cy = HIWORD(lParam);
-	
+
 	// Resize the right-hand tab control so that
 	// it fills the window
 	hwndCtrl = GetDlgItem(hwnd, IDC_TAB2);
 	GetWindowRect(hwndCtrl, &rect);
 	ScreenToClient(hwnd, (POINT *)&rect.left);
 	ScreenToClient(hwnd, (POINT *)&rect.right);
-	
+
 	MoveWindow(hwndCtrl, rect.left, rect.top, cx - rect.left - nLeftBorder, cy - rect.top - nBottomBorder, TRUE);
-	
+
 	GetWindowRect(hwndCtrl, &rect);
 	ScreenToClient(hwnd, (POINT *)&rect.left);
 	ScreenToClient(hwnd, (POINT *)&rect.right);
 	rect.top++;
-	
+
 	// Work out the coords of the tab contents
 	SendMessage(hwndCtrl, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
-	
+
 	// Resize the tree control so that it fills the tab control.
 	hwndCtrl = GetDlgItem(hwnd, IDC_TREE1);
 	InflateRect(&rect, 1,1);
 	MoveWindow(hwndCtrl, rect.left, rect.top, rect.right-rect.left, rect.bottom-rect.top, TRUE);
-	
+
 	// Position the size-grip
 	{
 		int width  = GetSystemMetrics(SM_CXVSCROLL);
 		int height = GetSystemMetrics(SM_CYHSCROLL);
-		
+
 		GetClientRect(hwnd, &rect);
-		
+
 		MoveWindow(hwndSizer, rect.right-width,	rect.bottom-height,width,height,TRUE);
-		
+
 	}
-	
+
 	GetWindowRect(hwndPin, &rect2);
 	OffsetRect(&rect2, -rect2.left, -rect2.top);
 
@@ -535,7 +535,7 @@ UINT WinSpyDlg_Size(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	//SetWindowPos(hwndPin,
 	//	HWND_TOP, rect.right-rect2.right, 1, rect2.right, rect2.bottom, 0);
 	MoveWindow(hwndPin, rect.right - rect2.right, 1, rect2.right, rect2.bottom, TRUE);
-	
+
 	return 0;
 }
 
@@ -557,11 +557,11 @@ void EnableLayoutCtrls(HWND hwnd, UINT layout)
 	int i;
 	const int nNumCtrls = 9;
 
-	CtrlEnable ctrl0[] = 
-	{ 
-		IDC_TAB1,		FALSE, 
-		IDOK,			FALSE, 
-		IDC_CAPTURE,	FALSE, 
+	CtrlEnable ctrl0[] =
+	{
+		IDC_TAB1,		FALSE,
+		IDOK,			FALSE,
+		IDC_CAPTURE,	FALSE,
 		IDC_EXPAND,		FALSE,
 		IDC_TAB2,		FALSE,
 		IDC_TREE1,		FALSE,
@@ -570,11 +570,11 @@ void EnableLayoutCtrls(HWND hwnd, UINT layout)
 		IDC_FLASH,		FALSE,
 	};
 
-	CtrlEnable ctrl1[] = 
-	{ 
-		IDC_TAB1,		TRUE, 
-		IDOK,			TRUE, 
-		IDC_CAPTURE,	TRUE, 
+	CtrlEnable ctrl1[] =
+	{
+		IDC_TAB1,		TRUE,
+		IDOK,			TRUE,
+		IDC_CAPTURE,	TRUE,
 		IDC_EXPAND,		TRUE,
 		IDC_TAB2,		FALSE,
 		IDC_TREE1,		FALSE,
@@ -583,11 +583,11 @@ void EnableLayoutCtrls(HWND hwnd, UINT layout)
 		IDC_FLASH,		FALSE,
 	};
 
-	CtrlEnable ctrl2[] = 
-	{ 
-		IDC_TAB1,		TRUE, 
-		IDOK,			TRUE, 
-		IDC_CAPTURE,	TRUE, 
+	CtrlEnable ctrl2[] =
+	{
+		IDC_TAB1,		TRUE,
+		IDOK,			TRUE,
+		IDC_CAPTURE,	TRUE,
 		IDC_EXPAND,		TRUE,
 		IDC_TAB2,		TRUE,
 		IDC_TREE1,		TRUE,
@@ -599,35 +599,35 @@ void EnableLayoutCtrls(HWND hwnd, UINT layout)
 	switch(layout)
 	{
 	case WINSPY_MINIMIZED:
-		
+
 		for(i = 0; i < NUMTABCONTROLITEMS; i++)
 			EnableWindow(WinSpyTab[i].hwnd, FALSE);
-		
+
 		for(i = 0; i < nNumCtrls; i++)
 			EnableDlgItem(hwnd, ctrl0[i].uCtrlId, ctrl0[i].fEnabled);
 
 		break;
-		
+
 	case WINSPY_NORMAL:
-		
+
 		for(i = 0; i < NUMTABCONTROLITEMS; i++)
 			EnableWindow(WinSpyTab[i].hwnd, TRUE);
-		
+
 		for(i = 0; i < nNumCtrls; i++)
 			EnableDlgItem(hwnd, ctrl1[i].uCtrlId, ctrl1[i].fEnabled);
-		
+
 		break;
-		
+
 	case WINSPY_EXPANDED:
-		
+
 		for(i = 0; i < NUMTABCONTROLITEMS; i++)
 			EnableWindow(WinSpyTab[i].hwnd, TRUE);
-		
+
 		for(i = 0; i < nNumCtrls; i++)
 			EnableDlgItem(hwnd, ctrl2[i].uCtrlId, ctrl2[i].fEnabled);
-		
+
 		break;
-		
+
 	}
 
 }
@@ -636,7 +636,7 @@ UINT WinSpyDlg_WindowPosChanged(HWND hwnd, WINDOWPOS *wp)
 {
 	UINT layout;
 	HICON hIcon, hOld;
-		
+
 	static UINT oldlayout = -1;
 
 	if(wp == 0)
@@ -687,20 +687,20 @@ UINT WinSpyDlg_WindowPosChanged(HWND hwnd, WINDOWPOS *wp)
 				SetWindowLong(hwndExpand, GWL_STYLE, dwStyle & ~BS_RIGHT);
 				SetWindowText(hwndExpand, _T("L&ess"));
 			}
-			
+
 			SetSysMenuIconFromLayout(hwnd, layout);
 
 			EnableLayoutCtrls(hwnd, layout);
 		}
-		
+
 		oldlayout = layout;
 	}
-	
+
 	// Has our Z-order changed?
 	if(wp && !(wp->flags & SWP_NOZORDER))
 	{
 		DWORD dwStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
-	
+
 		// Set the global flag (just so we can remember it in the registry)
 		if(dwStyle & WS_EX_TOPMOST)
 			fAlwaysOnTop = TRUE;
@@ -709,8 +709,8 @@ UINT WinSpyDlg_WindowPosChanged(HWND hwnd, WINDOWPOS *wp)
 
 		CheckSysMenu(hwnd, IDM_WINSPY_ONTOP, fAlwaysOnTop);
 	}
-	
-	
+
+
 	return 0;
 }
 
@@ -725,19 +725,19 @@ UINT WinSpyDlg_Sizing(HWND hwnd, UINT nSide, RECT *prc)
 	int maxy;
 	int nWidthNew;
 	int nHeightNew;
-	
+
 	minx = szMinimized.cx;
 	miny = szMinimized.cy;
 	maxy = szNormal.cy;
-	
+
 	nWidthNew   = prc->right - prc->left;
 	nHeightNew  = prc->bottom - prc->top;
-	
+
 	if(fxMaxed == FALSE)
 	{
 		if(nWidthNew <= minx)
 			nWidthNew = minx;
-		
+
 		if(nWidthNew > minx && nWidthNew < szExpanded.cx)
 			nWidthNew = szExpanded.cx;
 	}
@@ -745,16 +745,16 @@ UINT WinSpyDlg_Sizing(HWND hwnd, UINT nSide, RECT *prc)
 	{
 		if(nWidthNew < szExpanded.cx)
 			nWidthNew = minx;
-		
+
 	}
-	
+
 	if(fyMaxed == FALSE)
 	{
 		if(nHeightNew > miny)
 		{
 			nHeightNew = maxy;
 		}
-		
+
 		if(nHeightNew <= miny)
 		{
 			nHeightNew = miny;
@@ -771,51 +771,51 @@ UINT WinSpyDlg_Sizing(HWND hwnd, UINT nSide, RECT *prc)
 		else
 			nHeightNew = maxy;
 	}
-	
+
 	// Adjust the rectangle's dimensions
-	switch(nSide) 
+	switch(nSide)
 	{
-	case WMSZ_LEFT:    
-		prc->left   = prc->right  - nWidthNew;  
+	case WMSZ_LEFT:
+		prc->left   = prc->right  - nWidthNew;
 		break;
-		
-	case WMSZ_TOP:     
-		prc->top    = prc->bottom - nHeightNew; 
+
+	case WMSZ_TOP:
+		prc->top    = prc->bottom - nHeightNew;
 		//>
 		prc->right  = prc->left   + nWidthNew;
 		break;
-		
-	case WMSZ_RIGHT:   
-		prc->right  = prc->left   + nWidthNew;  
+
+	case WMSZ_RIGHT:
+		prc->right  = prc->left   + nWidthNew;
 		break;
-		
-	case WMSZ_BOTTOM:  
-		prc->bottom = prc->top    + nHeightNew; 
+
+	case WMSZ_BOTTOM:
+		prc->bottom = prc->top    + nHeightNew;
 		//>
 		prc->right  = prc->left   + nWidthNew;
 		break;
-		
+
 	case WMSZ_BOTTOMLEFT:
-		prc->bottom = prc->top    + nHeightNew; 
-		prc->left   = prc->right  - nWidthNew;  
+		prc->bottom = prc->top    + nHeightNew;
+		prc->left   = prc->right  - nWidthNew;
 		break;
-		
+
 	case WMSZ_BOTTOMRIGHT:
-		prc->bottom = prc->top    + nHeightNew; 
-		prc->right  = prc->left   + nWidthNew;  
+		prc->bottom = prc->top    + nHeightNew;
+		prc->right  = prc->left   + nWidthNew;
 		break;
-		
+
 	case WMSZ_TOPLEFT:
 		prc->left   = prc->right  - nWidthNew;
 		prc->top    = prc->bottom - nHeightNew;
 		break;
-		
+
 	case WMSZ_TOPRIGHT:
 		prc->top    = prc->bottom - nHeightNew;
-		prc->right  = prc->left   + nWidthNew;  
+		prc->right  = prc->left   + nWidthNew;
 		break;
 	}
-	
+
 	return TRUE;
 }
 
@@ -834,18 +834,18 @@ UINT WinSpyDlg_ExitSizeMove(HWND hwnd)
 {
 	RECT rect;
 	UINT uLayout;
-	
+
 	static UINT uOldLayout = WINSPY_MINIMIZED;
-	
+
 
 	GetWindowRect(hwnd, &rect);
-	
+
 	szCurrent.cx = rect.right - rect.left;
 	szCurrent.cy = rect.bottom - rect.top;
-	
+
 	fyMaxed = (szCurrent.cy > szMinimized.cy);
 	fxMaxed = (szCurrent.cx >= szExpanded.cx);
-	
+
 	if(fyMaxed == FALSE)
 	{
 		uLayout = WINSPY_MINIMIZED;
@@ -856,15 +856,15 @@ UINT WinSpyDlg_ExitSizeMove(HWND hwnd)
 			uLayout = WINSPY_EXPANDED;
 		else
 			uLayout = WINSPY_NORMAL;
-		
+
 		szLastMax = szCurrent;
 	}
-	
+
 	SetSysMenuIconFromLayout(hwnd, uLayout);
-	
+
 	if(uLayout == WINSPY_EXPANDED && uOldLayout != WINSPY_EXPANDED)
 		RefreshTreeView(GetDlgItem(hwnd, IDC_TREE1));
-	
+
 	// If the window was moved (ie. dragged by caption/client),
 	// Then update our pinned corner position
 	if(uHitTest == HTCAPTION)
@@ -878,9 +878,9 @@ UINT WinSpyDlg_ExitSizeMove(HWND hwnd)
 UINT_PTR WinSpyDlg_FullWindowDrag(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
 	uHitTest = DefWindowProc(hwnd, WM_NCHITTEST, wParam, lParam);
-		
+
 	// Allow full-window dragging
-	if(fFullDragging &&	uHitTest == HTCLIENT) 
+	if(fFullDragging &&	uHitTest == HTCLIENT)
 		uHitTest = HTCAPTION;
 
 	SetWindowLongPtr(hwnd, DWLP_MSGRESULT, uHitTest);

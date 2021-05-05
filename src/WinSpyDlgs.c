@@ -1,7 +1,7 @@
 //
 //	WinSpyDlgs.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	Contains all the dialog box procedures for
@@ -63,7 +63,7 @@ extern TCHAR szPath[];
 	ZwAlertResumeThread(hThread, 0);
 
 	CloseHandle(hThread);
-	
+
 
 	return exitcode;
 }*/
@@ -80,11 +80,11 @@ UINT WinSpy_PopupCommandHandler(HWND hwndDlg, UINT uCmdId, HWND hwndTarget)
 	dwStyle   = GetWindowLong(hwndTarget, GWL_STYLE);
 	dwStyleEx = GetWindowLong(hwndTarget, GWL_EXSTYLE);
 
-	switch(uCmdId)		
+	switch(uCmdId)
 	{
 	// Show / Hide
 	case IDM_POPUP_VISIBLE:
-		
+
 		dwSWPflags = SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOZORDER;
 
 		if(dwStyle & WS_VISIBLE)
@@ -93,14 +93,14 @@ UINT WinSpy_PopupCommandHandler(HWND hwndDlg, UINT uCmdId, HWND hwndTarget)
 			dwSWPflags |= SWP_SHOWWINDOW;
 
 		SetWindowPos(hwndTarget, 0, 0,0,0,0, dwSWPflags);
-		
+
 		return 0;
-		
+
 	// Enable / Disable
 	case IDM_POPUP_ENABLED:
 		EnableWindow(hwndTarget, (dwStyle & WS_DISABLED) ? TRUE : FALSE);
 		return 0;
-		
+
 	// Ontop / Not ontop
 	case IDM_POPUP_ONTOP:
 
@@ -114,10 +114,10 @@ UINT WinSpy_PopupCommandHandler(HWND hwndDlg, UINT uCmdId, HWND hwndTarget)
 		SetWindowPos(hwndTarget, hwndZ,	0,0,0,0, dwSWPflags);
 
 		return 0;
-		
+
 	// Show the edit-size dialog
 	case IDM_POPUP_SETPOS:
-		
+
 		ShowEditSizeDlg(hwndDlg, hwndTarget);
 		return 0;
 
@@ -147,10 +147,10 @@ UINT WinSpy_PopupCommandHandler(HWND hwndDlg, UINT uCmdId, HWND hwndTarget)
 	case IDM_POPUP_SAVE:
 	//	SaveTreeStructure(hwndDlg, hwndTarget);
 		return 0;
-		
+
 	default:
 		return 0;
-		
+
 	}
 }
 
@@ -172,27 +172,27 @@ void WinSpy_SetupPopupMenu(HMENU hMenu, HWND hwndTarget)
 		fParentVisible = IsWindowVisible(GetParent(hwndTarget));
 	else
 		fParentVisible = TRUE;
-	
+
 	if(GetParent(hwndTarget))
 		fParentEnabled = IsWindowEnabled(GetParent(hwndTarget));
 	else
 		fParentEnabled = TRUE;
-	
+
 	if(dwStyle & WS_VISIBLE)
 		CheckMenuItem(hMenu, IDM_POPUP_VISIBLE, MF_BYCOMMAND | MF_CHECKED);
 	else
 		CheckMenuItem(hMenu, IDM_POPUP_VISIBLE, MF_BYCOMMAND | MF_UNCHECKED);
-	
+
 	if(dwStyle & WS_DISABLED)
 		CheckMenuItem(hMenu, IDM_POPUP_ENABLED, MF_BYCOMMAND | MF_UNCHECKED);
 	else
 		CheckMenuItem(hMenu, IDM_POPUP_ENABLED, MF_BYCOMMAND | MF_CHECKED);
-	
+
 	if(dwStyleEx & WS_EX_TOPMOST)
 		CheckMenuItem(hMenu, IDM_POPUP_ONTOP, MF_BYCOMMAND | MF_CHECKED);
 	else
 		CheckMenuItem(hMenu, IDM_POPUP_ONTOP, MF_BYCOMMAND | MF_UNCHECKED);
-	
+
 	EnableMenuItem(hMenu, IDM_POPUP_VISIBLE, MF_BYCOMMAND | (fParentVisible ? MF_ENABLED : MF_DISABLED|MF_GRAYED));
 	EnableMenuItem(hMenu, IDM_POPUP_ONTOP,   MF_BYCOMMAND | (fParentVisible ? MF_ENABLED : MF_DISABLED|MF_GRAYED));
 	EnableMenuItem(hMenu, IDM_POPUP_ENABLED, MF_BYCOMMAND | (fParentEnabled ? MF_ENABLED : MF_DISABLED|MF_GRAYED));
@@ -227,7 +227,7 @@ LRESULT CALLBACK GeneralDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 		switch(LOWORD(wParam))
 		{
 		// added in 1.6: windowproc URL control
-		case IDC_WINDOWPROC: 
+		case IDC_WINDOWPROC:
 			//RemoveHyperlink(hwnd, IDC_WINDOWPROC);
 			//InvalidateRect(GetDlgItem(hwnd, IDC_WINDOWPROC), 0, 0);
 			ShowDlgItem(hwnd, IDC_WINDOWPROC, SW_HIDE);
@@ -254,7 +254,7 @@ LRESULT CALLBACK GeneralDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 
 			WinSpy_SetupPopupMenu(hPopup, hCtrl);
 
-			uCmd = TrackPopupMenu(hPopup, TPM_RIGHTALIGN | TPM_TOPALIGN | TPM_RETURNCMD, 
+			uCmd = TrackPopupMenu(hPopup, TPM_RIGHTALIGN | TPM_TOPALIGN | TPM_RETURNCMD,
 				rect.right, rect.bottom, 0, hwnd, 0);
 
 			WinSpy_PopupCommandHandler(hwnd, uCmd, hCtrl);
@@ -309,7 +309,7 @@ LRESULT CALLBACK GeneralDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			break;
 
 	}
-	
+
 	return FALSE;
 }
 
@@ -346,7 +346,7 @@ LRESULT CALLBACK StyleDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam
 		}
 
 	case WM_COMMAND:
-		
+
 		switch(LOWORD(wParam))
 		{
 		case IDC_EDITSTYLE:
@@ -403,7 +403,7 @@ LRESULT CALLBACK WindowDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 		ListView_InsertColumn(hwndList1, 0, &lvcol);
 		ListView_InsertColumn(hwndList2, 0, &lvcol);
 		width -= lvcol.cx;
-		
+
 		lvcol.pszText = _T("Class Name");
 		lvcol.cx   = 100;
 		ListView_InsertColumn(hwndList1, 1, &lvcol);
@@ -443,7 +443,7 @@ LRESULT CALLBACK WindowDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPara
 
 		switch(LOWORD(wParam))
 		{
-		case IDC_PARENT: case IDC_OWNER: 
+		case IDC_PARENT: case IDC_OWNER:
 			GetDlgItemText(hwnd, LOWORD(wParam), ach, sizeof(ach)/sizeof(TCHAR));
 			DisplayWindowInfo((HWND)_tstrtoib16(ach));
 			return TRUE;
@@ -472,7 +472,7 @@ LRESULT CALLBACK PropertyDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPa
 		hwndList1 = GetDlgItem(hwnd, IDC_LIST1);
 		ListView_SetExtendedListViewStyle(hwndList1, LVS_EX_FULLROWSELECT);
 
-		// Work out how big the header-items need to be 
+		// Work out how big the header-items need to be
 		GetClientRect(hwndList1, &rect);
 		width = rect.right;
 		width -= GetSystemMetrics(SM_CXVSCROLL);
@@ -483,15 +483,15 @@ LRESULT CALLBACK PropertyDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPa
 		lvcol.iSubItem = 0;
 		lvcol.pszText = _T("Handle");
 		ListView_InsertColumn(hwndList1, 0, &lvcol);
-		width -= lvcol.cx;		
-		
+		width -= lvcol.cx;
+
 		// Insert "Property" header-item
 		lvcol.pszText = _T("Property Name");
 		lvcol.cx   = width;
 		ListView_InsertColumn(hwndList1, 1, &lvcol);
 
 		return TRUE;
-	
+
 	case WM_SYSCOLORCHANGE:
 
 		// Need to react to system colour changes
@@ -560,13 +560,13 @@ LRESULT CALLBACK ProcessDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 			//
 			// Display a popup menu underneath the close button
 			//
-			uCmd = TrackPopupMenu(hPopup, TPM_RIGHTALIGN | TPM_TOPALIGN | TPM_RETURNCMD, 
+			uCmd = TrackPopupMenu(hPopup, TPM_RIGHTALIGN | TPM_TOPALIGN | TPM_RETURNCMD,
 				rect.right, rect.bottom, 0, hwnd, 0);
 
 			switch(uCmd)
 			{
 			case IDM_WINSPY_FINDEXE:
-			
+
 				{
 					TCHAR szExplorer[MAX_PATH];
 					TCHAR szPath[MAX_PATH];
@@ -586,10 +586,10 @@ LRESULT CALLBACK ProcessDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 				if(MessageBox(hwnd, szWarning2, szAppName, MB_YESNO|MB_ICONWARNING) == IDYES)
 				{
 					HANDLE hProcess;
-					
+
 					hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, dwProcessId);
-					
-					
+
+
 					if(hProcess != 0)
 					{
 						TerminateProcess(hProcess, -1);
@@ -605,12 +605,12 @@ LRESULT CALLBACK ProcessDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lPar
 
 			// Cleanly exit. Won't work if app. is hung
 			case IDM_WINSPY_POSTQUIT:
-				
+
 				if(MessageBox(hwnd, szWarning1, szAppName, MB_YESNO|MB_ICONWARNING) == IDYES)
 				{
 					PostThreadMessage(dwThreadId, WM_QUIT, 0, 0);
 				}
-				
+
 				break;
 
 			}

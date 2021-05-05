@@ -1,6 +1,6 @@
 //
 //	DisplayScrollInfo.c
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //	Freeware
 //
 //	void SetScrollInfo(HWND hwnd)
@@ -36,12 +36,12 @@ void SetScrollbarInfo(HWND hwnd)
 	bartype = SB_HORZ;
 
 	GetClassName(hwnd, ach, sizeof(ach) / sizeof(TCHAR));
-	
+
 	if(lstrcmpi(ach, _T("ScrollBar")) == 0)
 	{
 		if((dwStyle & SBS_VERT) == 0)
 			bartype = SB_CTL;
-	
+
 		SetDlgItemText(hwndDlg, IDC_HSTATE, _T("Visible"));
 	}
 	else
@@ -56,7 +56,7 @@ void SetScrollbarInfo(HWND hwnd)
 	{
 		SetDlgItemInt(hwndDlg, IDC_HMIN, si.nMin, TRUE);
 		SetDlgItemInt(hwndDlg, IDC_HMAX, si.nMax, TRUE);
-		SetDlgItemInt(hwndDlg, IDC_HPOS, si.nPos, TRUE);	
+		SetDlgItemInt(hwndDlg, IDC_HPOS, si.nPos, TRUE);
 		SetDlgItemInt(hwndDlg, IDC_HPAGE, si.nPage, TRUE);
 
 		if(bartype == SB_HORZ)
@@ -82,7 +82,7 @@ void SetScrollbarInfo(HWND hwnd)
 	{
 		if((dwStyle & SBS_VERT) == SB_VERT)
 			bartype = SB_CTL;
-	
+
 		SetDlgItemText(hwndDlg, IDC_VSTATE, _T("Visible"));
 	}
 	else
@@ -97,7 +97,7 @@ void SetScrollbarInfo(HWND hwnd)
 	{
 		SetDlgItemInt(hwndDlg, IDC_VMIN, si.nMin, TRUE);
 		SetDlgItemInt(hwndDlg, IDC_VMAX, si.nMax, TRUE);
-		SetDlgItemInt(hwndDlg, IDC_VPOS, si.nPos, TRUE);	
+		SetDlgItemInt(hwndDlg, IDC_VPOS, si.nPos, TRUE);
 		SetDlgItemInt(hwndDlg, IDC_VPAGE, si.nPage, TRUE);
 
 		if(bartype == SB_VERT)

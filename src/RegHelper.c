@@ -1,7 +1,7 @@
 //
 //	RegHelper.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	Implements registry helper functions

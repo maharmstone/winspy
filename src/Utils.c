@@ -1,7 +1,7 @@
 //
 //	Utils.c
 //
-//  Copyright (c) 2002 by J Brown 
+//  Copyright (c) 2002 by J Brown
 //  Freeware
 //
 //	Lots of utility and general helper functions.
@@ -31,11 +31,11 @@ BOOL EnablePrivilege(TCHAR *szPrivName, BOOL fEnable)
 
 	if(!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
 		return FALSE;
-	
+
 	tp.PrivilegeCount			= 1;
 	tp.Privileges[0].Luid		= luid;
 	tp.Privileges[0].Attributes = fEnable ? SE_PRIVILEGE_ENABLED : 0;
-	
+
 	AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(tp), NULL, NULL);
 
 	CloseHandle(hToken);
@@ -114,11 +114,11 @@ UINT _tstrtoib16(TCHAR *szHexStr)
 		UINT x = ch - _T('0');
 		if(x > 9 && x <= 42) x -= 7;		//A-Z
 		else if(x > 42)   x -= 39;			//a-z
-					
+
 		num = (num << 4) | (x & 0x0f);
 		ch = *hexptr++;
 	}
-	
+
 	return num;
 }
 
@@ -158,7 +158,7 @@ DWORD GetDlgItemBaseInt(HWND hwnd, UINT ctrlid, int base)
 #define ETDT_USETABTEXTURE  0x00000004
 #define ETDT_ENABLETAB      (ETDT_ENABLE  | ETDT_USETABTEXTURE)
 
-// 
+//
 typedef HRESULT (WINAPI * ETDTProc) (HWND, DWORD);
 
 //
@@ -173,13 +173,13 @@ BOOL EnableDialogTheme(HWND hwnd)
 
 	if(hUXTheme)
 	{
-		fnEnableThemeDialogTexture = 
+		fnEnableThemeDialogTexture =
 			(ETDTProc)GetProcAddress(hUXTheme, "EnableThemeDialogTexture");
 
 		if(fnEnableThemeDialogTexture)
 		{
 			fnEnableThemeDialogTexture(hwnd, ETDT_ENABLETAB);
-			
+
 			FreeLibrary(hUXTheme);
 			return TRUE;
 		}
@@ -201,20 +201,20 @@ BOOL EnableDialogTheme(HWND hwnd)
 
 //
 //	Get the specified file-version information string from a file
-//	
+//
 //	szItem	- version item string, e.g:
-//		"FileDescription", "FileVersion", "InternalName", 
+//		"FileDescription", "FileVersion", "InternalName",
 //		"ProductName", "ProductVersion", etc  (see MSDN for others)
 //
 TCHAR *GetVersionString(TCHAR *szFileName, TCHAR *szValue, TCHAR *szBuffer, ULONG nLength)
 {
 	DWORD  len;
-	PVOID  ver;	
+	PVOID  ver;
 	DWORD  *codepage;
 	TCHAR  fmt[0x40];
 	PVOID  ptr = 0;
 	BOOL   result = FALSE;
-	
+
 	szBuffer[0] = '\0';
 
 	len = GetFileVersionInfoSize(szFileName, 0);
@@ -226,9 +226,9 @@ TCHAR *GetVersionString(TCHAR *szFileName, TCHAR *szValue, TCHAR *szBuffer, ULON
 	{
 		if(VerQueryValue(ver, TEXT("\\VarFileInfo\\Translation"), &codepage, &len))
 		{
-			wsprintf(fmt, TEXT("\\StringFileInfo\\%04x%04x\\%s"), (*codepage) & 0xFFFF, 
+			wsprintf(fmt, TEXT("\\StringFileInfo\\%04x%04x\\%s"), (*codepage) & 0xFFFF,
 					(*codepage) >> 16, szValue);
-			
+
 			if(VerQueryValue(ver, fmt, &ptr, &len))
 			{
 				lstrcpyn(szBuffer, (TCHAR*)ptr, min(nLength, len));
