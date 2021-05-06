@@ -19,7 +19,7 @@ int atoi( const char *string );
 //
 //	Enable/Disable privilege with specified name (for current process)
 //
-BOOL EnablePrivilege(WCHAR *szPrivName, BOOL fEnable)
+static BOOL EnablePrivilege(WCHAR *szPrivName, BOOL fEnable)
 {
 	TOKEN_PRIVILEGES tp;
 	LUID	luid;
@@ -52,26 +52,26 @@ BOOL EnableDebugPrivilege()
 //
 // Style helper functions
 //
-UINT AddStyle(HWND hwnd, UINT style)
+static UINT AddStyle(HWND hwnd, UINT style)
 {
 	UINT oldstyle = GetWindowLong(hwnd, GWL_STYLE);
 	SetWindowLongW(hwnd, GWL_STYLE,  oldstyle | style);
 	return oldstyle;
 }
 
-UINT AddDlgItemStyle(HWND hwnd, UINT nCtrlId, UINT style)
+static UINT AddDlgItemStyle(HWND hwnd, UINT nCtrlId, UINT style)
 {
 	return AddStyle(GetDlgItem(hwnd, nCtrlId), style);
 }
 
-UINT DelStyle(HWND hwnd, UINT style)
+static UINT DelStyle(HWND hwnd, UINT style)
 {
 	UINT oldstyle = GetWindowLong(hwnd, GWL_STYLE);
 	SetWindowLongW(hwnd, GWL_STYLE, oldstyle & ~style);
 	return oldstyle;
 }
 
-UINT DelDlgItemStyle(HWND hwnd, UINT nCtrlId, UINT style)
+static UINT DelDlgItemStyle(HWND hwnd, UINT nCtrlId, UINT style)
 {
 	return DelStyle(GetDlgItem(hwnd, nCtrlId), style);
 }
@@ -121,7 +121,7 @@ UINT _tstrtoib16(WCHAR *szHexStr)
 	return num;
 }
 
-DWORD GetNumericValue(HWND hwnd, int base)
+static DWORD GetNumericValue(HWND hwnd, int base)
 {
 	WCHAR szAddressText[128];
 
@@ -144,7 +144,7 @@ DWORD GetNumericValue(HWND hwnd, int base)
 
 DWORD GetDlgItemBaseInt(HWND hwnd, UINT ctrlid, int base)
 {
-	return (DWORD)GetNumericValue(GetDlgItem(hwnd, ctrlid), base);
+	return GetNumericValue(GetDlgItem(hwnd, ctrlid), base);
 }
 
 //

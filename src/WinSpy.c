@@ -147,7 +147,7 @@ void DisplayWindowInfo(HWND hwnd)
 //
 //	User-defined callback function for the Find Tool
 //
-UINT CALLBACK WndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
+static UINT CALLBACK WndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
 {
 	HWND hwndMain = GetParent(hwndTool);
 
@@ -265,7 +265,7 @@ void CheckSysMenu(HWND hwnd, UINT uItemId, BOOL fChecked)
 //
 // Is the specified item in system menu checked?
 //
-BOOL IsSysMenuChecked(HWND hwnd, UINT uItemId)
+static BOOL IsSysMenuChecked(HWND hwnd, UINT uItemId)
 {
 	HMENU hSysMenu;
 	DWORD dwState;
@@ -280,7 +280,7 @@ BOOL IsSysMenuChecked(HWND hwnd, UINT uItemId)
 //
 //	Toggle the checked status for specified item
 //
-BOOL ToggleSysMenuCheck(HWND hwnd, UINT uItemId)
+static BOOL ToggleSysMenuCheck(HWND hwnd, UINT uItemId)
 {
 	if(IsSysMenuChecked(hwnd, uItemId))
 	{
@@ -309,7 +309,7 @@ void SetSysMenuIconFromLayout(HWND hwnd, UINT layout)
 //
 //	Create a sizing grip for the lower-right corner
 //
-HWND CreateSizeGrip(HWND hwndDlg)
+static HWND CreateSizeGrip(HWND hwndDlg)
 {
 	HWND hwndSizeGrip;
 
@@ -328,7 +328,7 @@ HWND CreateSizeGrip(HWND hwndDlg)
 //
 //	Create a tooltip control,
 //
-HWND CreateTooltip(HWND hwndDlg)
+static HWND CreateTooltip(HWND hwndDlg)
 {
 	HWND hwndTT;
 	TOOLINFOW ti;
@@ -411,7 +411,7 @@ HWND CreateTooltip(HWND hwndDlg)
 //	Create a toolbar with one button in it, for
 //  the pin-button
 //
-HWND CreatePinToolbar(HWND hwndDlg)
+static HWND CreatePinToolbar(HWND hwndDlg)
 {
 	RECT    rect;
 	HWND	hwndTB;
@@ -451,7 +451,7 @@ HWND CreatePinToolbar(HWND hwndDlg)
 //
 //	WM_INITDIALOG handler
 //
-BOOL WinSpy_InitDlg(HWND hwnd)
+static BOOL WinSpy_InitDlg(HWND hwnd)
 {
 	HBITMAP hBmp1, hBmp2;
 	HMENU   hSysMenu;
@@ -581,7 +581,7 @@ BOOL WinSpy_InitDlg(HWND hwnd)
 //
 //	WM_NOTIFY handler
 //
-UINT WinSpyDlg_NotifyHandler(HWND hwnd, WPARAM wParam, NMHDR *hdr)
+static UINT WinSpyDlg_NotifyHandler(HWND hwnd, WPARAM wParam, NMHDR *hdr)
 {
 	NMTREEVIEWW   *nmtv = (NMTREEVIEWW *)hdr;
 	TVHITTESTINFO hti;
@@ -687,7 +687,7 @@ UINT WinSpyDlg_NotifyHandler(HWND hwnd, WPARAM wParam, NMHDR *hdr)
 //
 //	WM_SYSCOLORCHANGE handler
 //
-BOOL WinSpyDlg_SysColorChange(HWND hwnd)
+static BOOL WinSpyDlg_SysColorChange(HWND hwnd)
 {
 	int i;
 
@@ -715,7 +715,7 @@ BOOL WinSpyDlg_SysColorChange(HWND hwnd)
 }
 
 #ifdef _DEBUG
-void DumpRect(HWND hwnd)
+static void DumpRect(HWND hwnd)
 {
 	RECT  rect;
 	WCHAR ach[80];
@@ -729,7 +729,7 @@ void DumpRect(HWND hwnd)
 //
 //	Dialog procedure for main window
 //
-INT_PTR WINAPI DialogProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+static INT_PTR WINAPI DialogProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(msg)
 	{
@@ -796,7 +796,7 @@ INT_PTR WINAPI DialogProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //  is specified. (MFC extensions must be turned off for the resource
 //  to enable this feature).
 //
-void RegisterDialogClass(WCHAR szNewName[])
+static void RegisterDialogClass(WCHAR szNewName[])
 {
 	WNDCLASSEXW wc;
 

@@ -40,7 +40,7 @@ void FillStyleLists(HWND hwndTarget, HWND hwndStyleList, HWND hwndExStyleList,
 //
 //	Define our callback function for the Window Finder Tool
 //
-UINT CALLBACK StyleEditWndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
+static UINT CALLBACK StyleEditWndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
 {
 	HWND hwndDlg;
 	WCHAR szText[120];
@@ -75,7 +75,7 @@ UINT CALLBACK StyleEditWndFindProc(HWND hwndTool, UINT uCode, HWND hwnd)
 	return 0;
 }
 
-INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK StyleEditProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	static StyleEditState *state;
 

@@ -62,7 +62,7 @@ void PreMultiplyRGBChannels(HBITMAP hBmp, LPBYTE pBitmapBits)
 }
 */
 
-HBITMAP MakeDockPanelBitmap(RECT *rect)
+static HBITMAP MakeDockPanelBitmap(RECT *rect)
 {
 	int width  = GetRectWidth(rect);
 	int height = GetRectHeight(rect);
@@ -136,7 +136,7 @@ HBITMAP MakeDockPanelBitmap(RECT *rect)
 	return hbm;
 }
 
-void UpdatePanelTrans(HWND hwndPanel, RECT *rect)
+static void UpdatePanelTrans(HWND hwndPanel, RECT *rect)
 {
 	POINT ptZero = { 0, 0 };
 	COLORREF crKey = RGB(0,0,0);
@@ -182,7 +182,7 @@ void UpdatePanelTrans(HWND hwndPanel, RECT *rect)
 //  all the drawing happens via the DOCKPANEL WM_TIMER,
 //  and calls to UpdateLayeredWindow with a transparent PNG graphic
 //
-LRESULT CALLBACK TransWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK TransWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch(msg)
 	{
@@ -193,7 +193,7 @@ LRESULT CALLBACK TransWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProcW(hwnd, msg, wParam, lParam);
 }
 
-ATOM InitTrans()
+static ATOM InitTrans()
 {
 	WNDCLASSEXW wc = { sizeof(wc) };
 

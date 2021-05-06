@@ -110,7 +110,7 @@ static unsigned char ANDMask[128] =
 
 };
 
-void FreeHyperlink(HWND hwnd)
+static void FreeHyperlink(HWND hwnd)
 {
 	void *mem = (void *)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
 

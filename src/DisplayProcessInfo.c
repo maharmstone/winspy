@@ -25,7 +25,7 @@ typedef BOOL  (WINAPI * EnumProcessModulesProc )(HANDLE, HMODULE *, DWORD, LPDWO
 typedef DWORD (WINAPI * GetModuleBaseNameProc  )(HANDLE, HMODULE, LPWSTR, DWORD);
 typedef DWORD (WINAPI * GetModuleFileNameExProc)(HANDLE, HMODULE, LPWSTR, DWORD);
 
-BOOL GetProcessNameByPid1(DWORD dwProcessId, WCHAR szName[], DWORD nNameSize, WCHAR szPath[], DWORD nPathSize)
+static BOOL GetProcessNameByPid1(DWORD dwProcessId, WCHAR szName[], DWORD nNameSize, WCHAR szPath[], DWORD nPathSize)
 {
 	HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	PROCESSENTRY32W pe = { sizeof(pe) };

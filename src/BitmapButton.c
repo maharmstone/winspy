@@ -33,7 +33,7 @@
 
 BOOL	g_fThemeApiAvailable = FALSE;
 
-HTHEME _OpenThemeData(HWND hwnd, LPCWSTR pszClassList)
+static HTHEME _OpenThemeData(HWND hwnd, LPCWSTR pszClassList)
 {
 	if(g_fThemeApiAvailable)
 		return OpenThemeData(hwnd, pszClassList);
@@ -41,7 +41,7 @@ HTHEME _OpenThemeData(HWND hwnd, LPCWSTR pszClassList)
 		return NULL;
 }
 
-HRESULT _CloseThemeData(HTHEME hTheme)
+static HRESULT _CloseThemeData(HTHEME hTheme)
 {
 	if(g_fThemeApiAvailable)
 		return CloseThemeData(hTheme);
@@ -335,7 +335,7 @@ BOOL DrawBitmapButton(DRAWITEMSTRUCT *dis)
 //  in the resource editor - this function sets these
 //  styles automatically
 //
-void MakeBitmapButton(HWND hwnd, UINT uIconId)
+static void MakeBitmapButton(HWND hwnd, UINT uIconId)
 {
 	WNDPROC oldproc;
 	DWORD   dwStyle;

@@ -60,7 +60,7 @@ static GMI_PROC pGetMonitorInfo = 0;
 static BOOL fFindMultiMon = TRUE;
 
 //	Get the dimensions of the work area that the specified WinRect resides in
-void GetWorkArea(RECT *prcWinRect, RECT *prcWorkArea)
+static void GetWorkArea(RECT *prcWinRect, RECT *prcWorkArea)
 {
 	HMONITOR	hMonitor;
 	HMODULE		hUser32;
@@ -213,7 +213,7 @@ BOOL IsMinimized(HWND hwnd)
 //  szClient   - (output) size of client area in pixels
 //	szWindow   - (output) total size of based on current settings
 //
-void CalcDlgWindowSize(HWND hwnd, SIZE *szDlgUnits, SIZE *szClient, SIZE *szWindow)
+static void CalcDlgWindowSize(HWND hwnd, SIZE *szDlgUnits, SIZE *szClient, SIZE *szWindow)
 {
 	RECT rect;
 	DWORD dwStyle;
@@ -551,7 +551,7 @@ typedef struct
 	BOOL fEnabled;
 } CtrlEnable;
 
-void EnableLayoutCtrls(HWND hwnd, UINT layout)
+static void EnableLayoutCtrls(HWND hwnd, UINT layout)
 {
 	int i;
 	const int nNumCtrls = 9;

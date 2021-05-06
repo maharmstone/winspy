@@ -134,7 +134,7 @@ ClassImageLookup ClassImage[] =
 //  do is find the class-atom for a window, then match it in
 //  our lookup table above (instead of doing slow string-searches).
 //
-void InitAtomList()
+static void InitAtomList()
 {
 	int		i;
 	ATOM    atom;
@@ -159,7 +159,7 @@ void InitAtomList()
 //  window classname. dwStyle lets us differentiate further
 //  when we find a match.
 //
-int IconFromClassName(WCHAR *szName, DWORD dwStyle)
+static int IconFromClassName(WCHAR *szName, DWORD dwStyle)
 {
 	int i = 0;
 
@@ -203,7 +203,7 @@ int IconFromClassName(WCHAR *szName, DWORD dwStyle)
 //
 //	szTotal must be MIN_FORMAT_LEN characters
 //
-int FormatWindowText(HWND hwnd, WCHAR szTotal[])
+static int FormatWindowText(HWND hwnd, WCHAR szTotal[])
 {
 	static WCHAR szClass[MAX_CLASS_LEN + MAX_VERBOSE_LEN];
 	int idx;
@@ -286,7 +286,7 @@ int FormatWindowText(HWND hwnd, WCHAR szTotal[])
 //
 //
 //
-WinProc *GetProcessWindowStack(HWND hwndTree, HWND hwnd)
+static WinProc *GetProcessWindowStack(HWND hwndTree, HWND hwnd)
 {
 	DWORD			pid;
 	int				i;
@@ -347,7 +347,7 @@ WinProc *GetProcessWindowStack(HWND hwndTree, HWND hwnd)
 // the system. We have to work out whereabouts in the treeview
 // to insert each window
 //
-BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
+static BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
 {
 	HWND hwndTree = (HWND)lParam;
 
@@ -480,7 +480,7 @@ BOOL CALLBACK AllWindowProc(HWND hwnd, LPARAM lParam)
 //  starting from the desktop window
 //	HWND - handle to the dialog containing the tree
 //
-void FillGlobalWindowTree(HWND hwnd)
+static void FillGlobalWindowTree(HWND hwnd)
 {
 	HWND hwndTree = GetDlgItem(hwnd, IDC_TREE1);
 	TVINSERTSTRUCTW tv;

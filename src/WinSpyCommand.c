@@ -20,7 +20,7 @@
 
 HTREEITEM FindTreeItemByHwnd(HWND hwndTree, HWND hwndTarget, HTREEITEM hItem);
 
-void ShowHelp(HWND hwndMain, UINT uCommand, DWORD dwData)
+static void ShowHelp(HWND hwndMain, UINT uCommand, DWORD dwData)
 {
 	WCHAR szPath[MAX_PATH];
 	WCHAR *ptr;

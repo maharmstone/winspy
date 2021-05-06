@@ -58,8 +58,8 @@ HWND WindowFromPointEx(POINT pt, BOOL fShowHidden);
 void CaptureWindow(HWND hwndParent, HWND hwnd);
 
 HWND ShowTransWindow(HWND);
-void ShowSel(HWND);
-void HideSel(HWND);
+static void ShowSel(HWND);
+static void HideSel(HWND);
 
 static BOOL fTransSel = TRUE;
 static HWND hwndTransPanel = 0;
@@ -88,7 +88,7 @@ static HWND hwndCurrent;
 //
 //	Invert the specified window's border
 //
-void InvertWindow(HWND hwnd, BOOL fShowHidden)
+static void InvertWindow(HWND hwnd, BOOL fShowHidden)
 {
 	RECT rect;
 	RECT rect2;
@@ -168,7 +168,7 @@ void FlashWindowBorder(HWND hwnd, BOOL fShowHidden)
 	}
 }
 
-void LoadFinderResources()
+static void LoadFinderResources()
 {
 	hBitmapDrag1 = LoadBitmapW(GetModuleHandleW(0), MAKEINTRESOURCEW(IDB_DRAGTOOL1));
 	hBitmapDrag2 = LoadBitmapW(GetModuleHandleW(0), MAKEINTRESOURCEW(IDB_DRAGTOOL2));
@@ -176,7 +176,7 @@ void LoadFinderResources()
 	hCursor = LoadCursorW(GetModuleHandleW(0),      MAKEINTRESOURCEW(IDC_CURSOR1));
 }
 
-void FreeFinderResources()
+static void FreeFinderResources()
 {
 	DeleteObject(hBitmapDrag1);
 	DeleteObject(hBitmapDrag2);
@@ -184,12 +184,12 @@ void FreeFinderResources()
 	DestroyCursor(hCursor);
 }
 
-WNDFINDPROC GetWndFindProc(HWND hwnd)
+static WNDFINDPROC GetWndFindProc(HWND hwnd)
 {
 	return (WNDFINDPROC)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
 }
 
-UINT FireWndFindNotify(HWND hwndTool, UINT uCode, HWND hwnd)
+static UINT FireWndFindNotify(HWND hwndTool, UINT uCode, HWND hwnd)
 {
 	WNDFINDPROC wfp = GetWndFindProc(hwndTool);
 
@@ -199,7 +199,7 @@ UINT FireWndFindNotify(HWND hwndTool, UINT uCode, HWND hwnd)
 		return 0;
 }
 
-LRESULT EndFindToolDrag(HWND hwnd, WPARAM wParam, LPARAM lParam)
+static LRESULT EndFindToolDrag(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
 	HWND hwndParent;
 
@@ -313,7 +313,7 @@ static LRESULT CALLBACK draghookproc(int code, WPARAM wParam, LPARAM lParam)
 	return CallNextHookEx(draghook, code, wParam, lParam);
 }
 
-void ShowSel(HWND hwnd)
+static void ShowSel(HWND hwnd)
 {
 	if(fTransSel)
 	{
@@ -331,7 +331,7 @@ void ShowSel(HWND hwnd)
 	}
 }
 
-void HideSel(HWND hwnd)
+static void HideSel(HWND hwnd)
 {
 	if(fTransSel)
 	{
@@ -345,7 +345,7 @@ void HideSel(HWND hwnd)
 }
 
 
-LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK StaticProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	HWND hwndParent;
 	POINT pt;

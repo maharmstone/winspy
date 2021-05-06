@@ -208,7 +208,7 @@ void InitStockStyleLists()
 //
 //	Lookup the specified handle in the style list
 //
-int FormatStyle(WCHAR *ach, StyleLookupType *stylelist, int items, UINT matchthis)
+static int FormatStyle(WCHAR *ach, StyleLookupType *stylelist, int items, UINT matchthis)
 {
 	int i;
 

@@ -813,7 +813,7 @@ ClassStyleLookup ExtendedControls[] =
 // pClassList - a lookup table of classname / matching stylelist
 //
 //
-StyleLookupEx *FindStyleList(ClassStyleLookup *pClassList, WCHAR *szClassName, DWORD *pdwData)
+static StyleLookupEx *FindStyleList(ClassStyleLookup *pClassList, WCHAR *szClassName, DWORD *pdwData)
 {
 	int i;
 
@@ -839,7 +839,7 @@ StyleLookupEx *FindStyleList(ClassStyleLookup *pClassList, WCHAR *szClassName, D
 //  dwStyle    - style for the target window
 //  fAllStyles -
 //
-DWORD EnumStyles(StyleLookupEx *StyleList, HWND hwndList, DWORD dwStyle, BOOL fAllStyles)
+static DWORD EnumStyles(StyleLookupEx *StyleList, HWND hwndList, DWORD dwStyle, BOOL fAllStyles)
 {
 	// Remember what the style is before we start modifying it
 	DWORD dwOrig = dwStyle;

@@ -15,7 +15,7 @@
 //#import "wincodec.idl" no_namespace
 
 // Creates a stream object initialized with the data from an executable resource.
-IStream * CreateStreamOnResource(LPCWSTR lpName, LPCWSTR lpType)
+static IStream * CreateStreamOnResource(LPCWSTR lpName, LPCWSTR lpType)
 {
     IStream * ipStream = NULL;
 
@@ -87,7 +87,7 @@ Return:
 // I highly recommend the PNGOUT compression utility.)
 
 // Loads a PNG image from the specified stream (using Windows Imaging Component).
-IWICBitmapSource * LoadBitmapFromStream(IStream * ipImageStream)
+static IWICBitmapSource * LoadBitmapFromStream(IStream * ipImageStream)
 {
     // initialize return value
     IWICBitmapSource * ipBitmap = NULL;
@@ -138,7 +138,7 @@ ReleaseDecoder:
 
 
 // Creates a 32-bit DIB from the specified WIC bitmap.
-HBITMAP CreateHBITMAP(IWICBitmapSource * ipBitmap, PVOID *bits)
+static HBITMAP CreateHBITMAP(IWICBitmapSource * ipBitmap, PVOID *bits)
 {
     // initialize return value
     HBITMAP hbmp = NULL;

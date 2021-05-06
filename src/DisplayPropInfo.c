@@ -20,7 +20,7 @@
 //
 //	Called once for each window property
 //
-BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPWSTR lpszString, HANDLE hData, ULONG_PTR dwUser)
+static BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPWSTR lpszString, HANDLE hData, ULONG_PTR dwUser)
 {
 	HWND   hwndList = (HWND)dwUser;
 	WCHAR  ach[256];
@@ -60,7 +60,7 @@ BOOL CALLBACK PropEnumProcEx(HWND hwnd, LPWSTR lpszString, HANDLE hData, ULONG_P
 //
 //	Display the window properties (SetProp API)
 //
-void EnumWindowProps(HWND hwnd, HWND hwndList)
+static void EnumWindowProps(HWND hwnd, HWND hwndList)
 {
 	SendMessageW(hwndList, LVM_DELETEALLITEMS, 0, 0);
 	EnumPropsExW(hwnd, PropEnumProcEx, (ULONG_PTR)hwndList);

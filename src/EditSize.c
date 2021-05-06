@@ -20,7 +20,7 @@
 //
 //	rect - window coords
 //
-void SetupEdits(HWND hwndDlg, HWND hwndTarget, RECT *prect)
+static void SetupEdits(HWND hwndDlg, HWND hwndTarget, RECT *prect)
 {
 	DWORD dwStyle;
 	RECT rect;
@@ -46,7 +46,7 @@ void SetupEdits(HWND hwndDlg, HWND hwndTarget, RECT *prect)
 //	Set the target window's size/pos, based on the
 //  contents of the edit boxes
 //
-void SetTargetPos(HWND hwndDlg, HWND hwndTarget)
+static void SetTargetPos(HWND hwndDlg, HWND hwndTarget)
 {
 	RECT rect;
 
@@ -63,7 +63,7 @@ void SetTargetPos(HWND hwndDlg, HWND hwndTarget)
 //
 //	Dialog procedure for the edit size window
 //
-INT_PTR CALLBACK EditSizeDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK EditSizeDlgProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 {
 	RECT  rect;
 
