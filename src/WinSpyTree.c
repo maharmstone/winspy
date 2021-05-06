@@ -127,34 +127,6 @@ ClassImageLookup ClassImage[] =
 };
 
 //
-//	Not used at present (doesn't work!)
-//
-//  Could be used to perform fast classname lookups, if we
-//  precalculate all the class atoms, then all we need to
-//  do is find the class-atom for a window, then match it in
-//  our lookup table above (instead of doing slow string-searches).
-//
-static void InitAtomList()
-{
-	int		i;
-	ATOM    atom;
-
-	INITCOMMONCONTROLSEX ice;
-
-	ice.dwSize = sizeof(ice);
-	ice.dwICC  = ICC_COOL_CLASSES ;//-1;	//all classes
-
-	i=InitCommonControlsEx(&ice);
-
-	for(i = 0; ClassImage[i].szName[0] != 0; i++)
-	{
-		atom = GlobalFindAtomW(ClassImage[i].szName);
-
-		ClassImage[i].atom = atom;
-	}
-}
-
-//
 //	Find the image index (in TreeView imagelist), given a
 //  window classname. dwStyle lets us differentiate further
 //  when we find a match.

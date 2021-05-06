@@ -263,38 +263,6 @@ void CheckSysMenu(HWND hwnd, UINT uItemId, BOOL fChecked)
 }
 
 //
-// Is the specified item in system menu checked?
-//
-static BOOL IsSysMenuChecked(HWND hwnd, UINT uItemId)
-{
-	HMENU hSysMenu;
-	DWORD dwState;
-
-	hSysMenu = GetSystemMenu(hwnd, FALSE);
-
-	dwState = GetMenuState(hSysMenu, uItemId, MF_BYCOMMAND);
-
-	return (dwState & MF_CHECKED) ? TRUE : FALSE;
-}
-
-//
-//	Toggle the checked status for specified item
-//
-static BOOL ToggleSysMenuCheck(HWND hwnd, UINT uItemId)
-{
-	if(IsSysMenuChecked(hwnd, uItemId))
-	{
-		CheckSysMenu(hwnd, uItemId, FALSE);
-		return FALSE;
-	}
-	else
-	{
-		CheckSysMenu(hwnd, uItemId, TRUE);
-		return TRUE;
-	}
-}
-
-//
 //	Determine the window layout and check/uncheck  the
 //  maximized menu item accordingly
 //

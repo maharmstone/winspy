@@ -48,34 +48,6 @@ BOOL EnableDebugPrivilege()
     return EnablePrivilege(L"SeDebugPrivilege", TRUE);
 }
 
-
-//
-// Style helper functions
-//
-static UINT AddStyle(HWND hwnd, UINT style)
-{
-	UINT oldstyle = GetWindowLong(hwnd, GWL_STYLE);
-	SetWindowLongW(hwnd, GWL_STYLE,  oldstyle | style);
-	return oldstyle;
-}
-
-static UINT AddDlgItemStyle(HWND hwnd, UINT nCtrlId, UINT style)
-{
-	return AddStyle(GetDlgItem(hwnd, nCtrlId), style);
-}
-
-static UINT DelStyle(HWND hwnd, UINT style)
-{
-	UINT oldstyle = GetWindowLong(hwnd, GWL_STYLE);
-	SetWindowLongW(hwnd, GWL_STYLE, oldstyle & ~style);
-	return oldstyle;
-}
-
-static UINT DelDlgItemStyle(HWND hwnd, UINT nCtrlId, UINT style)
-{
-	return DelStyle(GetDlgItem(hwnd, nCtrlId), style);
-}
-
 BOOL EnableDlgItem(HWND hwnd, UINT nCtrlId, BOOL fEnabled)
 {
 	return EnableWindow(GetDlgItem(hwnd, nCtrlId), fEnabled);

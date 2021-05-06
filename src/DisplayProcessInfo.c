@@ -25,45 +25,6 @@ typedef BOOL  (WINAPI * EnumProcessModulesProc )(HANDLE, HMODULE *, DWORD, LPDWO
 typedef DWORD (WINAPI * GetModuleBaseNameProc  )(HANDLE, HMODULE, LPWSTR, DWORD);
 typedef DWORD (WINAPI * GetModuleFileNameExProc)(HANDLE, HMODULE, LPWSTR, DWORD);
 
-static BOOL GetProcessNameByPid1(DWORD dwProcessId, WCHAR szName[], DWORD nNameSize, WCHAR szPath[], DWORD nPathSize)
-{
-	HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	PROCESSENTRY32W pe = { sizeof(pe) };
-	BOOL fFound = FALSE;
-
-	szPath[0] = '\0';
-	szName[0] = '\0';
-
-	if(Process32FirstW(h, &pe))
-	{
-		do
-		{
-			if(pe.th32ProcessID == dwProcessId)
-			{
-				if(szName)
-				{
-					lstrcpynW(szName, pe.szExeFile, nNameSize);
-				}
-
-				if(szPath)
-				{
-					//OpenProcess(
-					lstrcpynW(szPath, pe.szExeFile, nPathSize);
-				}
-
-				fFound = TRUE;
-				break;
-			}
-		}
-		while(Process32NextW(h, &pe));
-	}
-
-	CloseHandle(h);
-
-	return fFound;
-}
-
-
 //
 // This uses PSAPI.DLL, which is only available under NT/2000/XP I think,
 // so we dynamically load this library, so that we can still run under 9x.

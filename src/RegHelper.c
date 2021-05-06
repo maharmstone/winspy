@@ -13,23 +13,6 @@
 #include <windows.h>
 #include "RegHelper.h"
 
-
-static LONG GetSettingBinary(HKEY hkey, WCHAR szKeyName[], void *buf, ULONG nNumBytes)
-{
-	DWORD type = REG_BINARY;
-	ULONG len = nNumBytes;
-
-	if(ERROR_SUCCESS == RegQueryValueExW(hkey, szKeyName, 0, &type, (BYTE *)buf, &nNumBytes))
-	{
-		if(type != REG_BINARY) return 0;
-		else return nNumBytes;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
 LONG GetSettingInt(HKEY hkey, WCHAR szKeyName[], LONG nDefault)
 {
 	DWORD type;
@@ -64,26 +47,6 @@ BOOL GetSettingBool(HKEY hkey, WCHAR szKeyName[], BOOL nDefault)
 	}
 }
 
-static LONG GetSettingStr(HKEY hkey, WCHAR szKeyName[], WCHAR szDefault[], WCHAR szReturnStr[], DWORD nSize)
-{
-	DWORD type = REG_SZ;
-	WCHAR bigbuf[256];
-	ULONG len = sizeof(bigbuf);
-
-	if(ERROR_SUCCESS == RegQueryValueExW(hkey, szKeyName, 0, &type, (BYTE *)bigbuf, &len))
-	{
-		if(type != REG_SZ) return 0;
-		memcpy(szReturnStr, bigbuf, len+sizeof(WCHAR));
-		return len;
-	}
-	else
-	{
-		len = min(nSize, (DWORD)lstrlenW(szDefault) * sizeof(WCHAR));
-		memcpy(szReturnStr, szDefault, len+sizeof(WCHAR));
-		return len;
-	}
-}
-
 LONG WriteSettingInt(HKEY hkey, WCHAR szKeyName[], LONG nValue)
 {
 	return RegSetValueExW(hkey, szKeyName, 0, REG_DWORD, (BYTE *)&nValue, sizeof(nValue));
@@ -92,14 +55,4 @@ LONG WriteSettingInt(HKEY hkey, WCHAR szKeyName[], LONG nValue)
 LONG WriteSettingBool(HKEY hkey, WCHAR szKeyName[], BOOL nValue)
 {
 	return RegSetValueExW(hkey, szKeyName, 0, REG_DWORD, (BYTE *)&nValue, sizeof(nValue));
-}
-
-static LONG WriteSettingStr(HKEY hkey, WCHAR szKeyName[], WCHAR szString[])
-{
-	return RegSetValueExW(hkey, szKeyName, 0, REG_SZ, (BYTE *)szString, (lstrlenW(szString) + 1) * sizeof(WCHAR));
-}
-
-static LONG WriteSettingBinary(HKEY hkey, WCHAR szKeyName[], void *buf, UINT nNumBytes)
-{
-	return RegSetValueExW(hkey, szKeyName, 0, REG_BINARY, (BYTE *)buf, nNumBytes);
 }
